@@ -1,0 +1,10 @@
+Starting program: /home/addison/Desktop/visual studio code/CSE340/Project2/a.out 
+[Inferior 1 (process 7876) exited with code 01]
+Starting program: /home/addison/Desktop/visual studio code/CSE340/Project2/a.out < tests/test01.txt 1
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:148
+148	            for (std::map<string, int>::iterator it = idToLocation.begin(); it != idToLocation.end(); it++){
+0x00005555555560a0	148	            for (std::map<string, int>::iterator it = idToLocation.begin(); it != idToLocation.end(); it++){
+1: printVector = std::vector of length 0, capacity 0
+2: CFG = std::vector of length 0, capacity 0
+HOME = /home/addison

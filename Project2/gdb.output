@@ -1,0 +1,598 @@
+Breakpoint 1 at 0x2099: file project2.cc, line 140.
+[Inferior 1 (process 8354) exited with code 01]
+Breakpoint 1 at 0x2099: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:148
+warning: Source file is more recent than executable.
+148	            //DESC: Output the list of non-terminals followed by the lister of terminals in the order in which they appear in the grammar rules
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:148
+Breakpoint 1 at 0x2138: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:151
+151	    switch (task) {
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:151
+Breakpoint 1 at 0x2138: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:151
+151	    switch (task) {
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:151
+Breakpoint 1 at 0x2138: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:151
+151	    switch (task) {
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:151
+Breakpoint 1 at 0x2138: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:151
+151	    switch (task) {
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:151
+Breakpoint 1 at 0x2138: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:151
+151	    switch (task) {
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:151
+Breakpoint 1 at 0x2234: file project2.cc, line 140.
+[Inferior 1 (process 9647) exited normally]
+Breakpoint 1 at 0x224f: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:146
+146	    task = atoi(argv[1]);
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:146
+Breakpoint 1 at 0x224f: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:146
+146	    task = atoi(argv[1]);
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:146
+Breakpoint 1 at 0x224f: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:146
+146	    task = atoi(argv[1]);
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:146
+Breakpoint 1 at 0x2266: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:146
+146	    task = atoi(argv[1]);
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:146
+Breakpoint 1 at 0x2268: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:146
+146	    task = atoi(argv[1]);
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:146
+Breakpoint 1 at 0x2368: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:147
+147	    task = atoi(argv[1]);
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:147
+Breakpoint 1 at 0x2368: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:147
+147	    task = atoi(argv[1]);
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:147
+Breakpoint 1 at 0x22e8: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:147
+warning: Source file is more recent than executable.
+147	    task = atoi(argv[1]);
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:147
+Breakpoint 1 at 0x22e8: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:147
+147	    task = atoi(argv[1]);
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:147
+Breakpoint 1 at 0x22e8: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:147
+147	    task = atoi(argv[1]);
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:147
+Breakpoint 1 at 0x22e8: file project2.cc, line 140.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffdd48) at project2.cc:147
+147	    task = atoi(argv[1]);
+#0  main (argc=2, argv=0x7fffffffdd48) at project2.cc:147
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000555555558a66 in std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::operator[] (this=0x20, __n=0) at /usr/include/c++/7/bits/stl_vector.h:798
+798		return *(this->_M_impl._M_start + __n);
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000555555558aa0 in std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::operator[] (this=0x20, __n=0) at /usr/include/c++/7/bits/stl_vector.h:798
+798		return *(this->_M_impl._M_start + __n);
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000555555558c46 in std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::operator[] (this=0x20, __n=0) at /usr/include/c++/7/bits/stl_vector.h:798
+798		return *(this->_M_impl._M_start + __n);
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000555555558cea in std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::size (this=0x20) at /usr/include/c++/7/bits/stl_vector.h:671
+671	      { return size_type(this->_M_impl._M_finish - this->_M_impl._M_start); }
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b72bda in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::compare(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) const () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555874e in std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::operator[] (this=0x20, __n=0) at /usr/include/c++/7/bits/stl_vector.h:798
+798		return *(this->_M_impl._M_start + __n);
+[Inferior 1 (process 17818) exited normally]
+[Inferior 1 (process 17890) exited normally]
+[Inferior 1 (process 17933) exited normally]
+[Inferior 1 (process 17980) exited normally]
+[Inferior 1 (process 18056) exited normally]
+[Inferior 1 (process 18165) exited normally]
+[Inferior 1 (process 18626) exited normally]
+[Inferior 1 (process 18672) exited normally]
+[Inferior 1 (process 18749) exited normally]
+[Inferior 1 (process 18783) exited normally]
+[Inferior 1 (process 18884) exited normally]
+[Inferior 1 (process 18930) exited normally]
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000555555558900 in std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::size (this=0x20) at /usr/include/c++/7/bits/stl_vector.h:671
+671	      { return size_type(this->_M_impl._M_finish - this->_M_impl._M_start); }
+[Inferior 1 (process 19833) exited normally]
+[Inferior 1 (process 19943) exited normally]
+[Inferior 1 (process 20052) exited normally]
+[Inferior 1 (process 20098) exited normally]
+[Inferior 1 (process 20456) exited normally]
+[Inferior 1 (process 20559) exited normally]
+[Inferior 1 (process 20658) exited normally]
+[Inferior 1 (process 20727) exited normally]
+[Inferior 1 (process 20781) exited normally]
+[Inferior 1 (process 20842) exited normally]
+[Inferior 1 (process 20904) exited normally]
+[Inferior 1 (process 20999) exited normally]
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x555555780e70, nbytes=461) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555577fe70, nbytes=957) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555577fe70, nbytes=67) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+[Inferior 1 (process 21601) exited normally]
+[Inferior 1 (process 21694) exited normally]
+[Inferior 1 (process 21814) exited normally]
+[Inferior 1 (process 21877) exited normally]
+[Inferior 1 (process 21947) exited normally]
+[Inferior 1 (process 22046) exited normally]
+[Inferior 1 (process 22113) exited normally]
+[Inferior 1 (process 22163) exited normally]
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00005555555590de in std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::size (this=0x20) at /usr/include/c++/7/bits/stl_vector.h:671
+671	      { return size_type(this->_M_impl._M_finish - this->_M_impl._M_start); }
+[Inferior 1 (process 22284) exited normally]
+[Inferior 1 (process 22377) exited normally]
+[Inferior 1 (process 22466) exited normally]
+[Inferior 1 (process 22615) exited normally]
+[Inferior 1 (process 22657) exited normally]
+[Inferior 1 (process 22782) exited normally]
+[Inferior 1 (process 22936) exited normally]
+[Inferior 1 (process 23031) exited normally]
+[Inferior 1 (process 23083) exited normally]
+[Inferior 1 (process 23133) exited normally]
+[Inferior 1 (process 23386) exited normally]
+[Inferior 1 (process 23602) exited normally]
+[Inferior 1 (process 23676) exited normally]
+[Inferior 1 (process 23751) exited normally]
+[Inferior 1 (process 23814) exited normally]
+[Inferior 1 (process 24735) exited normally]
+[Inferior 1 (process 24801) exited normally]
+[Inferior 1 (process 24894) exited normally]
+[Inferior 1 (process 24918) exited normally]
+[Inferior 1 (process 3278) exited normally]
+[Inferior 1 (process 3312) exited normally]
+.gdbinit:4: Error in sourced command file:
+No executable file specified.
+Use the "file" or "exec-file" command.
+.gdbinit:4: Error in sourced command file:
+No executable file specified.
+Use the "file" or "exec-file" command.
+[Inferior 1 (process 3723) exited normally]
+[Inferior 1 (process 1881) exited normally]
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+[Inferior 1 (process 3401) exited normally]
+[Inferior 1 (process 3488) exited normally]
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555d56c in std::deque<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::emplace_back<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > (this=0xa0, __args#0=...) at /usr/include/c++/7/bits/deque.tcc:164
+164		if (this->_M_impl._M_finish._M_cur
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555d564 in std::deque<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::emplace_back<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > (this=0xa0, __args#0=...) at /usr/include/c++/7/bits/deque.tcc:164
+164		if (this->_M_impl._M_finish._M_cur
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555d564 in std::deque<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::emplace_back<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > (this=0xa0, __args#0=...) at /usr/include/c++/7/bits/deque.tcc:164
+164		if (this->_M_impl._M_finish._M_cur
+[Inferior 1 (process 4196) exited normally]
+[Inferior 1 (process 4250) exited normally]
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555d5d0 in std::deque<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::emplace_back<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > (this=0xa0, __args#0=...) at /usr/include/c++/7/bits/deque.tcc:164
+164		if (this->_M_impl._M_finish._M_cur
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555d65a in std::deque<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::emplace_back<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > (this=0xa0, __args#0=...) at /usr/include/c++/7/bits/deque.tcc:164
+164		if (this->_M_impl._M_finish._M_cur
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555d7ec in std::deque<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::emplace_back<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > (this=0xa0, __args#0=...) at /usr/include/c++/7/bits/deque.tcc:164
+164		if (this->_M_impl._M_finish._M_cur
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555a112 in std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>::_Deque_iterator (this=0x7fffffffd9d0, __x=...) at /usr/include/c++/7/bits/stl_deque.h:152
+152	      : _M_cur(__x._M_cur), _M_first(__x._M_first),
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+[Inferior 1 (process 5381) exited normally]
+[Inferior 1 (process 5432) exited normally]
+[Inferior 1 (process 5863) exited normally]
+[Inferior 1 (process 5926) exited normally]
+[Inferior 1 (process 6106) exited normally]
+[Inferior 1 (process 6321) exited normally]
+[Inferior 1 (process 6363) exited normally]
+[Inferior 1 (process 6456) exited normally]
+[Inferior 1 (process 6549) exited normally]
+[Inferior 1 (process 6620) exited normally]
+[Inferior 1 (process 6669) exited normally]
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+[Inferior 1 (process 8229) exited normally]
+[Inferior 1 (process 8279) exited normally]
+[Inferior 1 (process 8349) exited normally]
+[Inferior 1 (process 8495) exited normally]
+[Inferior 1 (process 9083) exited normally]
+[Inferior 1 (process 9247) exited normally]
+[Inferior 1 (process 9303) exited normally]
+[Inferior 1 (process 9405) exited normally]
+[Inferior 1 (process 9688) exited normally]
+[Inferior 1 (process 9755) exited normally]
+[Inferior 1 (process 9923) exited normally]
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b732b7 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) ()
+   from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Quit
+
+Quit
+
+Quit
+[Inferior 1 (process 10315) exited normally]
+
+Quit
+Please answer y or n.
+
+Quit
+
+Quit
+
+Quit
+
+Quit
+[Inferior 1 (process 10849) exited normally]
+[Inferior 1 (process 10935) exited normally]
+[Inferior 1 (process 11095) exited normally]
+[Inferior 1 (process 11205) exited normally]
+[Inferior 1 (process 11300) exited normally]
+[Inferior 1 (process 11439) exited normally]
+[Inferior 1 (process 11598) exited normally]
+
+Quit
+
+Quit
+
+Program received signal SIGSEGV, Segmentation fault.
+_IO_new_file_xsputn (f=0x7ffff782f760 <_IO_2_1_stdout_>, data=0x0, n=529) at fileops.c:1241
+1241	fileops.c: No such file or directory.
+[Inferior 1 (process 11882) exited normally]
+
+Quit
+
+Quit
+Please answer y or n.
+
+Quit
+
+Quit
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+[Inferior 1 (process 12367) exited normally]
+
+Quit
+
+Quit
+
+Program received signal SIGSEGV, Segmentation fault.
+Quit
+
+Program received signal SIGSEGV, Segmentation fault.
+Quit
+Please answer y or n.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+.gdbinit:4: Error in sourced command file:
+No executable file specified.
+Use the "file" or "exec-file" command.
+.gdbinit:4: Error in sourced command file:
+No executable file specified.
+Use the "file" or "exec-file" command.
+.gdbinit:4: Error in sourced command file:
+No executable file specified.
+Use the "file" or "exec-file" command.
+.gdbinit:4: Error in sourced command file:
+No executable file specified.
+Use the "file" or "exec-file" command.
+.gdbinit:4: Error in sourced command file:
+No executable file specified.
+Use the "file" or "exec-file" command.
+Ambiguous command "w": watch, wh, whatis, where, while, while-stepping, winheight, ws.
+.gdbinit:4: Error in sourced command file:
+No executable file specified.
+Use the "file" or "exec-file" command.
+.gdbinit:4: Error in sourced command file:
+No executable file specified.
+Use the "file" or "exec-file" command.
+[Inferior 1 (process 13310) exited normally]
+[Inferior 1 (process 13337) exited normally]
+
+Program received signal SIGSEGV, Segmentation fault.
+_IO_new_file_xsputn (f=0x7ffff782f760 <_IO_2_1_stdout_>, data=0x0, n=529) at fileops.c:1241
+1241	fileops.c: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+_IO_new_file_xsputn (f=0x7ffff782f760 <_IO_2_1_stdout_>, data=0x0, n=529) at fileops.c:1241
+1241	fileops.c: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+_IO_new_file_xsputn (f=0x7ffff782f760 <_IO_2_1_stdout_>, data=0x0, n=529) at fileops.c:1241
+1241	fileops.c: No such file or directory.
+[Inferior 1 (process 13569) exited normally]
+[Inferior 1 (process 13656) exited normally]
+[Inferior 1 (process 13680) exited normally]
+[Inferior 1 (process 13714) exited normally]
+[Inferior 1 (process 13732) exited normally]
+[Inferior 1 (process 13771) exited normally]
+[Inferior 1 (process 13862) exited normally]
+[Inferior 1 (process 13926) exited normally]
+[Inferior 1 (process 13970) exited normally]
+
+Program received signal SIGINT, Interrupt.
+0x000055555555b16c in ?? ()
+
+Program received signal SIGINT, Interrupt.
+0x000055555555c808 in ?? ()
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555578c360, nbytes=10) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555578c360, nbytes=10) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555578d360, nbytes=10) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555578d360, nbytes=10) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555578d360, nbytes=20) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555578d360, nbytes=20) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555578d360, nbytes=20) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555a5c8 in ?? ()
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555a5c8 in ?? ()
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555a5c8 in ?? ()
+[Inferior 1 (process 14982) exited normally]
+[Inferior 1 (process 15039) exited normally]
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b710f0 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::size() const () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7b710f0 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::size() const () from /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+[Inferior 1 (process 15252) exited normally]
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555578b360, nbytes=10) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+[Inferior 1 (process 15529) exited normally]
+[Inferior 1 (process 16325) exited normally]
+[Inferior 1 (process 17067) exited normally]
+[Inferior 1 (process 17494) exited normally]
+[Inferior 1 (process 17517) exited normally]
+[Inferior 1 (process 17660) exited normally]
+[Inferior 1 (process 17715) exited normally]
+[Inferior 1 (process 17798) exited normally]
+[Inferior 1 (process 17919) exited normally]
+[Inferior 1 (process 18363) exited normally]
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+[Inferior 1 (process 19362) exited normally]
+[Inferior 1 (process 2524) exited normally]
+[Inferior 1 (process 2555) exited normally]
+
+Program received signal SIGSEGV, Segmentation fault.
+__memcmp_sse4_1 () at ../sysdeps/x86_64/multiarch/memcmp-sse4.S:62
+62	../sysdeps/x86_64/multiarch/memcmp-sse4.S: No such file or directory.
+[Inferior 1 (process 2855) exited normally]
+[Inferior 1 (process 2943) exited normally]
+[Inferior 1 (process 3512) exited normally]
+[Inferior 1 (process 3588) exited normally]
+[Inferior 1 (process 3696) exited normally]
+[Inferior 1 (process 3980) exited normally]
+[Inferior 1 (process 4080) exited normally]
+[Inferior 1 (process 4527) exited normally]
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555578b360, nbytes=19) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555578b360, nbytes=19) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555578b360, nbytes=40) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+
+Program received signal SIGINT, Interrupt.
+0x00007ffff7553154 in __GI___libc_write (fd=1, buf=0x55555578b360, nbytes=37) at ../sysdeps/unix/sysv/linux/write.c:27
+27	../sysdeps/unix/sysv/linux/write.c: No such file or directory.
+[Inferior 1 (process 5032) exited normally]
+[Inferior 1 (process 5076) exited normally]
+[Inferior 1 (process 5258) exited normally]
+[Inferior 1 (process 5291) exited normally]
+[Inferior 1 (process 5345) exited normally]
+[Inferior 1 (process 5627) exited normally]
+[Inferior 1 (process 5807) exited normally]
+[Inferior 1 (process 5858) exited normally]
+[Inferior 1 (process 6122) exited normally]
+[Inferior 1 (process 6248) exited normally]
+[Inferior 1 (process 6408) exited normally]
+[Inferior 1 (process 7165) exited normally]
+[Inferior 1 (process 7200) exited normally]
+[Inferior 1 (process 7254) exited normally]
+[Inferior 1 (process 7314) exited normally]
+[Inferior 1 (process 8408) exited normally]
+[Inferior 1 (process 8492) exited normally]
+[Inferior 1 (process 8578) exited normally]
+[Inferior 1 (process 8767) exited normally]
+[Inferior 1 (process 8833) exited normally]
