@@ -1,0 +1,8 @@
+{
+	x : INT;
+	z : STRING;
+	y : BOOLEAN;
+	x = 1;
+	z = "a";
+	y = < x z;
+}

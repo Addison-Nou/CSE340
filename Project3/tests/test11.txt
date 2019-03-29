@@ -1,0 +1,7 @@
+{
+	x : STRING;
+	y , z : BOOLEAN;
+	y = TRUE;
+	x = "a";
+	z = < y x;
+}

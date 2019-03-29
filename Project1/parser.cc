@@ -369,7 +369,7 @@ void Parser::parse_expr(struct stmt* st){
     if ((t.token_type == PLUS) || (t.token_type == MINUS) || (t.token_type == MULT) || (t.token_type == DIV)){
         st->operand = parse_operator();
         //cout << "SET OPERAND TO:" << st->operand << endl;
-        st->op2 = parse_primary();    
+        st->op2 = parse_primary();
     }
 }
 

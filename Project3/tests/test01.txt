@@ -1,0 +1,5 @@
+ {
+	x : INT;
+	y : BOOLEAN;
+	y = x;
+ }

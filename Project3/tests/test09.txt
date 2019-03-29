@@ -1,0 +1,7 @@
+{
+	x , z : INT;
+	y : STRING;
+	x = 1;
+	y = "b";
+	z = + x y;
+}

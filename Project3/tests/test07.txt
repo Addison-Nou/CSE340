@@ -1,0 +1,13 @@
+{
+	a : INT;
+	b : INT;
+	a = 1;
+	b = 1;
+		{ a : INT;
+		a = 1;
+		WHILE ( > a b )
+		{
+			a = - a b;
+		}
+	}
+}
