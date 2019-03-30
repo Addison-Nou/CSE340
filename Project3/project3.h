@@ -4,57 +4,73 @@
 #include <deque>
 #include <map>
 
-struct variable{
-  std::string type;
-  int value;
+struct variable
+{
+  TokenType type;
+  float value;
+  std::string stringValue;
+  bool initialized;
 };
 
-struct scope{
-    //Map containing the currently declared variables within the scope
-    std::map<std::string, int> variables;
+struct scope
+{
+  //Map containing the currently declared variables within the scope
+  std::map<std::string, int> variables;
 
-    //Link to previous scope
-    scope* previousScope;
+  //Link to previous scope
+  scope *previousScope;
 
-    //Counter keeping track of the next available memory slot for the map in the scope
-    int nextAvailableMemory = 0;
+  //Counter keeping track of the next available memory slot for the map in the scope
+  int nextAvailableMemory = 0;
 };
 
-struct stmt{
-    //struct scope;             //scope of the program
-    std::string stmt_type;      //the type the statement is
-    int LHS;
-    int operator_symbol;        //operator symbol
-    int op1;                    //first variable
-    int op2;                    //second variable
-    struct stmt* next;          //next statement
+struct stmt
+{
+  //struct scope;             //scope of the program
+  std::string stmt_type; //the type the statement is
+  int LHS;
+  TokenType operator_symbol; //operator symbol
+  int op1 = -1;              //first variable
+  int op2 = -1;              //second variable
+  struct stmt *next;         //next statement
+  struct stmt *body;         // body stmt
+
+  // X = + 1 + 2 3
+  // parse assign stmt  X = temporary_value_1 (op1)
+  // parse expr         temporary_value_1 = 1 + temporary_value_2
+  // prase expr         temporary_value_2 = 2 + 3
+  //------------------------ REVERSE ORDER
+  // prase expr         temporary_value_2 = 2 + 3
+  // parse expr         temporary_value_1 = 1 + temporary_value_2
+  // parse assign stmt  X = temporary_value_1 (op1)
 };
 
-class project3 {
-  public:
-    struct stmt* parse_program();
-    struct stmt* parse_scope();
-    struct stmt* parse_scope_list();
-    struct stmt* parse_var_decl();
-    struct stmt* parse_id_list();
-    struct stmt* parse_type_name();
-    struct stmt* parse_stmt_list();
-    struct stmt* parse_stmt();
-    struct stmt* parse_assign_stmt();
-    struct stmt* parse_while_stmt();
-    struct stmt* parse_expr();
-    struct stmt* parse_arithmetic_operator();
-    struct stmt* parse_binary_boolean_operator();
-    struct stmt* parse_relational_operator();
-    struct stmt* parse_primary();
-    struct stmt* parse_bool_const();
-    struct stmt* parse_condition();
+class project3
+{
+public:
+  struct stmt *parse_program();
+  struct stmt *parse_scope();
+  struct stmt *parse_scope_list();
+  struct stmt *parse_var_decl();
+  std::vector<std::string> parse_id_list();
+  TokenType parse_type_name();
+  struct stmt *parse_stmt_list();
+  struct stmt *parse_stmt();
+  struct stmt *parse_assign_stmt();
+  struct stmt *parse_while_stmt();
+  struct stmt *parse_expr();
+  TokenType parse_arithmetic_operator();
+  TokenType parse_binary_boolean_operator();
+  TokenType parse_relational_operator();
+  int parse_primary();
+  int parse_bool_const();
+  struct stmt *parse_condition();
 
-  private:
-    LexicalAnalyzer lexer;
+private:
+  LexicalAnalyzer lexer;
 
-    void syntax_error();
-    Token expect(TokenType expected_type);
-    Token peek();
-
+  void syntax_error();
+  Token expect(TokenType expected_type);
+  Token peek();
+  int getVariableLocation(std::string variableName);
 };
