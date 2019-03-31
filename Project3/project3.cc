@@ -58,7 +58,7 @@ Token project3::expect(TokenType expected_type)
 }
 
 // Loops through scopes and attempts to find variable
-int project3::getVariableLocation(std::string variableName)
+int project3::getVariableLocation(std::string variableName, bool lookLocally = false)
 {
     string keywords[] = {
         "REAL", "INT", "BOOLEAN", "STRING",
@@ -78,7 +78,7 @@ int project3::getVariableLocation(std::string variableName)
     do
     {
         // cout << "Variable Name: " << variableName << endl;
-        if (scopeCursor == NULL || scopeCursor->variables.size() == 0)
+        if (scopeCursor == NULL)
         {
             break;
         }
@@ -103,7 +103,7 @@ int project3::getVariableLocation(std::string variableName)
             scopeCursor = scopeCursor->previousScope;
         }
 
-    } while (scopeCursor != NULL);
+    } while (scopeCursor != NULL && lookLocally == false);
 
     return -1;
 }
@@ -130,6 +130,8 @@ struct stmt *project3::parse_scope()
     parse_scope_list();
 
     expect(RBRACE);
+
+    currentScope = currentScope->previousScope;
 }
 
 //scope_list -> ...
@@ -181,7 +183,7 @@ struct stmt *project3::parse_var_decl()
     // Make sure no duplicate variables are declared
     for (auto &pair : ids)
     {
-        if (getVariableLocation(pair.id) != -1)
+        if (getVariableLocation(pair.id, true) != -1)
         {
             declaration_errors.push_back("ERROR CODE 1.1 " + pair.id);
         }
@@ -296,7 +298,7 @@ struct stmt *project3::parse_assign_stmt()
 
     assignStmt->LHS = variableLocation;
 
-    t = expect(EQUAL);
+    expect(EQUAL);
 
     struct stmt *firstStmt = parse_expr();
     struct stmt *finalStmt = firstStmt;
@@ -313,6 +315,7 @@ struct stmt *project3::parse_assign_stmt()
     // Check to make sure left hand side and right hand side are of the same type
     if (memory[variableLocation].type != REAL && memory[variableLocation].type != memory[assignStmt->op1].type)
     {
+
         type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C1");
     }
     if (memory[variableLocation].type == REAL && (memory[assignStmt->op1].type != REAL && memory[assignStmt->op1].type != INT))
@@ -320,6 +323,8 @@ struct stmt *project3::parse_assign_stmt()
         type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C2");
     }
 
+    // Keep track of initialized variabled in current scope
+    currentScope->initialized_variables.push_back(assignStmt->LHS);
     memory[assignStmt->LHS].initialized = true;
 
     return firstStmt;
@@ -328,6 +333,10 @@ struct stmt *project3::parse_assign_stmt()
 //while_stmt -> ...
 struct stmt *project3::parse_while_stmt()
 {
+    struct scope *newScope = new scope;
+    newScope->previousScope = currentScope;
+    currentScope = newScope;
+
     Token t = expect(WHILE);
 
     struct stmt *whileStmt = parse_condition();
@@ -349,6 +358,13 @@ struct stmt *project3::parse_while_stmt()
         struct stmt *firstStmt = parse_stmt();
         whileStmt->body = firstStmt;
     }
+
+    // Undo all initializations
+    for (int &initialized_var : currentScope->initialized_variables)
+    {
+        memory[initialized_var].initialized = false;
+    }
+    currentScope = currentScope->previousScope;
 
     return whileStmt;
 }
@@ -392,6 +408,11 @@ struct stmt *project3::parse_expr()
         if ((memory[temp->op1].type != REAL && memory[temp->op1].type != INT) ||
             (memory[temp->op2].type != REAL && memory[temp->op2].type != INT))
         {
+            // cout << "Memory Location 1: " << temp->op1 << endl;
+            // cout << "Memory Location 2: " << temp->op2 << endl;
+            // cout << "TYPE1: " << memory[temp->op1].type << endl;
+            // cout << "TYPE2: " << memory[temp->op2].type << endl;
+            // cout << "TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C3" << endl;
             type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C3");
         }
 
@@ -553,6 +574,7 @@ int project3::parse_primary()
         int location = getVariableLocation(t.lexeme);
         if (location == -1)
         {
+            // cout << "ERROR FINDING LEXEME: " << t.lexeme << endl;
             declaration_errors.push_back("ERROR CODE 1.2 " + t.lexeme);
             return -1;
         }
@@ -678,6 +700,7 @@ int main()
         for (it = unusedVariables.begin(); it != unusedVariables.end(); ++it)
         {
             cout << *it << " ";
+            break;
         }
         cout << endl;
         exit(1);

@@ -27,8 +27,7 @@ struct scope
   //Link to previous scope
   scope *previousScope;
 
-  //Counter keeping track of the next available memory slot for the map in the scope
-  int nextAvailableMemory = 0;
+  std::vector<int> initialized_variables;
 };
 
 struct stmt
@@ -79,5 +78,5 @@ private:
   void syntax_error();
   Token expect(TokenType expected_type);
   Token peek();
-  int getVariableLocation(std::string variableName);
+  int getVariableLocation(std::string variableName, bool lookLocally);
 };
