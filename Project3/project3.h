@@ -10,6 +10,13 @@ struct variable
   float value;
   std::string stringValue;
   bool initialized;
+  int line_no_declared;
+};
+
+struct id_line_pair
+{
+  std::string id;
+  int line_no;
 };
 
 struct scope
@@ -52,7 +59,7 @@ public:
   struct stmt *parse_scope();
   struct stmt *parse_scope_list();
   struct stmt *parse_var_decl();
-  std::vector<std::string> parse_id_list();
+  std::vector<id_line_pair> parse_id_list();
   TokenType parse_type_name();
   struct stmt *parse_stmt_list();
   struct stmt *parse_stmt();

@@ -14,6 +14,10 @@ using namespace std;
 //Global scope pointer that points to current scope
 struct scope *currentScope = new scope;
 std::set<std::string> unusedVariables;
+std::vector<std::string> uninitialized_variables;
+std::vector<std::string> declaration_errors;
+std::vector<std::string> type_mismatch_errors;
+std::vector<std::string> variable_references;
 
 //Global vector containing all variables, their types and values
 std::vector<struct variable> memory;
@@ -56,6 +60,18 @@ Token project3::expect(TokenType expected_type)
 // Loops through scopes and attempts to find variable
 int project3::getVariableLocation(std::string variableName)
 {
+    string keywords[] = {
+        "REAL", "INT", "BOOLEAN", "STRING",
+        "WHILE", "TRUE", "FALSE"};
+
+    for (auto &keyword : keywords)
+    {
+        if (keyword.compare(variableName) == 0)
+        {
+            syntax_error();
+        }
+    }
+
     //Checking all scopes to see if the variable has been declared yet
     struct scope *scopeCursor = currentScope;
 
@@ -74,7 +90,11 @@ int project3::getVariableLocation(std::string variableName)
             {
                 unusedVariables.erase(variableName);
             }
-            return scopeCursor->variables[variableName];
+
+            int var_loc = scopeCursor->variables[variableName];
+            variable_references.push_back(variableName + " " + to_string(lexer.get_line_no()) + " " + to_string(memory[var_loc].line_no_declared));
+
+            return var_loc;
         }
 
         //Move down the scope list to check the previous scope
@@ -156,15 +176,14 @@ struct stmt *project3::parse_scope_list()
 //var decl -> id_list COLON type_name SEMICOLON
 struct stmt *project3::parse_var_decl()
 {
-    vector<std::string> ids = parse_id_list();
+    vector<id_line_pair> ids = parse_id_list();
 
     // Make sure no duplicate variables are declared
-    for (auto &id : ids)
+    for (auto &pair : ids)
     {
-        if (getVariableLocation(id) != -1)
+        if (getVariableLocation(pair.id) != -1)
         {
-            cout << "ERROR CODE 1.1 " << id << endl;
-            exit(1);
+            declaration_errors.push_back("ERROR CODE 1.1 " + pair.id);
         }
     }
 
@@ -173,27 +192,31 @@ struct stmt *project3::parse_var_decl()
     TokenType type = parse_type_name();
 
     // Create variables in current scope
-    for (auto &id : ids)
+    for (auto &pair : ids)
     {
         struct variable x;
         x.type = type;
+        x.line_no_declared = pair.line_no;
         memory.push_back(x);
-        unusedVariables.insert(id);
-        currentScope->variables[id] = memory.size() - 1;
+        unusedVariables.insert(pair.id);
+        currentScope->variables[pair.id] = memory.size() - 1;
     }
 
     expect(SEMICOLON);
 }
 
 //id_list -> ...
-std::vector<std::string> project3::parse_id_list()
+std::vector<id_line_pair> project3::parse_id_list()
 {
-    vector<std::string> ids;
+    vector<id_line_pair> ids;
 
     while (peek().token_type == ID)
     {
         Token t = expect(ID);
-        ids.push_back(t.lexeme);
+        id_line_pair new_pair;
+        new_pair.id = t.lexeme;
+        new_pair.line_no = t.line_no;
+        ids.push_back(new_pair);
 
         Token t2 = lexer.GetToken();
         if (t2.token_type != COMMA)
@@ -268,8 +291,7 @@ struct stmt *project3::parse_assign_stmt()
     int variableLocation = getVariableLocation(t.lexeme);
     if (variableLocation == -1)
     {
-        cout << "ERROR: Variable doesn't exist (parse assign stmt) REPLACE ME... " << t.lexeme << endl;
-        syntax_error();
+        declaration_errors.push_back("ERROR CODE 1.2 " + t.lexeme);
     }
 
     assignStmt->LHS = variableLocation;
@@ -291,13 +313,11 @@ struct stmt *project3::parse_assign_stmt()
     // Check to make sure left hand side and right hand side are of the same type
     if (memory[variableLocation].type != REAL && memory[variableLocation].type != memory[assignStmt->op1].type)
     {
-        cout << "TYPE MISMATCH " << lexer.get_line_no() << " C1" << endl;
-        exit(1);
+        type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C1");
     }
     if (memory[variableLocation].type == REAL && (memory[assignStmt->op1].type != REAL && memory[assignStmt->op1].type != INT))
     {
-        cout << "TYPE MISMATCH " << lexer.get_line_no() << " C2" << endl;
-        exit(1);
+        type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C2");
     }
 
     memory[assignStmt->LHS].initialized = true;
@@ -308,13 +328,9 @@ struct stmt *project3::parse_assign_stmt()
 //while_stmt -> ...
 struct stmt *project3::parse_while_stmt()
 {
-    struct stmt *whileStmt = new stmt;
-    whileStmt->stmt_type = "WHILE";
-    whileStmt->next = NULL;
-
     Token t = expect(WHILE);
 
-    struct stmt *condition = parse_condition();
+    struct stmt *whileStmt = parse_condition();
 
     t = lexer.GetToken();
 
@@ -349,7 +365,6 @@ struct stmt *project3::parse_expr()
     memory.push_back(var);
     temp->LHS = memory.size() - 1;
 
-    struct stmt *returnMe = NULL;
     Token t = peek();
 
     //       (op1)     (op2)
@@ -374,10 +389,26 @@ struct stmt *project3::parse_expr()
         temp->op1 = result1->LHS;
         temp->op2 = result2->LHS;
 
+        if ((memory[temp->op1].type != REAL && memory[temp->op1].type != INT) ||
+            (memory[temp->op2].type != REAL && memory[temp->op2].type != INT))
+        {
+            type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C3");
+        }
+
+        if (memory[temp->op1].type == REAL || memory[temp->op2].type == REAL || t.token_type == DIV)
+        {
+            memory[temp->LHS].type = REAL;
+        }
+        else
+        {
+            memory[temp->LHS].type = memory[temp->op1].type;
+        }
+
         // Set up ordering for execution of statements
         result1->next = result2;
         result2->next = temp;
-        returnMe = result1;
+
+        return result1;
     }
 
     //expr -> binary_boolean_operator expr expr
@@ -389,10 +420,18 @@ struct stmt *project3::parse_expr()
         temp->op1 = result1->LHS;
         temp->op2 = result2->LHS;
 
+        if ((memory[temp->op1].type != BOOLEAN) ||
+            (memory[temp->op2].type != BOOLEAN))
+        {
+            type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C4");
+        }
+
         // Set up ordering for execution of statements
         result1->next = result2;
         result2->next = temp;
-        returnMe = result1;
+        memory[temp->LHS].type = memory[temp->op1].type;
+
+        return result1;
     }
 
     //expr -> relational_operator expr expr
@@ -404,10 +443,26 @@ struct stmt *project3::parse_expr()
         temp->op1 = result1->LHS;
         temp->op2 = result2->LHS;
 
+        if ((memory[temp->op1].type == STRING && memory[temp->op2].type != STRING) ||
+            (memory[temp->op1].type == BOOLEAN && memory[temp->op2].type != BOOLEAN))
+        {
+            type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C5");
+        }
+
+        else if ((memory[temp->op1].type == REAL && (memory[temp->op2].type != REAL && memory[temp->op2].type != INT)) ||
+                 (memory[temp->op1].type == INT && (memory[temp->op2].type != REAL && memory[temp->op2].type != INT)))
+        {
+            type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C6");
+        }
+        else
+        {
+            memory[temp->LHS].type = BOOLEAN;
+        }
         // Set up ordering for execution of statements
         result1->next = result2;
         result2->next = temp;
-        returnMe = result1;
+
+        return result1;
     }
 
     //expr -> NOT expr
@@ -416,7 +471,9 @@ struct stmt *project3::parse_expr()
         temp->operator_symbol = NOT;
         struct stmt *result1 = parse_expr();
         temp->op1 = result1->LHS;
-        returnMe = result1;
+        memory[temp->LHS].type = memory[temp->op1].type;
+
+        return result1;
     }
 
     //expr -> primary
@@ -424,12 +481,17 @@ struct stmt *project3::parse_expr()
     {
         int variableLocation = parse_primary();
         temp->op1 = variableLocation;
-        returnMe = temp;
+
+        if (temp->op1 != -1) // -1 from parse_primary. Meaning it doesn't exist.
+        {
+            memory[temp->LHS].type = memory[temp->op1].type;
+        }
+        return temp;
     }
-
-    memory[temp->LHS].type = memory[temp->op1].type;
-
-    return returnMe;
+    else
+    {
+        syntax_error();
+    }
 }
 
 //arithmetic_operator -> ...
@@ -491,12 +553,12 @@ int project3::parse_primary()
         int location = getVariableLocation(t.lexeme);
         if (location == -1)
         {
-            cout << "ERROR: VARIABLE DOESN'T EXIST. (parse primary) " << t.lexeme << endl;
-            syntax_error();
+            declaration_errors.push_back("ERROR CODE 1.2 " + t.lexeme);
+            return -1;
         }
         else if (memory[location].initialized == false)
         {
-            cout << "UNINITIALIZED " << t.lexeme << " " << lexer.get_line_no() << endl;
+            uninitialized_variables.push_back("UNINITIALIZED " + t.lexeme + " " + std::to_string(lexer.get_line_no()));
             return location;
         }
         else
@@ -581,11 +643,16 @@ struct stmt *project3::parse_condition()
     expect(LPAREN);
 
     struct stmt *st = parse_expr();
-
-    if (st->operator_symbol != GREATER || st->operator_symbol != GTEQ || st->operator_symbol != LESS || st->operator_symbol != LTEQ || st->operator_symbol != NOTEQUAL)
+    struct stmt *finalStmt = st;
+    while (finalStmt->next != NULL)
     {
-        cout << "ERROR: Condition without relational operator: " << st->operator_symbol << endl;
-        syntax_error();
+        finalStmt = finalStmt->next;
+    }
+
+    if (finalStmt->operator_symbol != GREATER && finalStmt->operator_symbol != GTEQ && finalStmt->operator_symbol != LESS && finalStmt->operator_symbol != LTEQ && finalStmt->operator_symbol != NOTEQUAL)
+    {
+        // cout << "ERROR: Condition without relational operator: " << finalStmt->operator_symbol << endl;
+        type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C7");
     }
 
     expect(RPAREN);
@@ -598,7 +665,12 @@ int main()
     project3 proj;
     proj.parse_program();
 
-    if (unusedVariables.size() > 0)
+    if (declaration_errors.size() > 0)
+    {
+        cout << declaration_errors[0] << endl;
+        exit(1);
+    }
+    else if (unusedVariables.size() > 0)
     {
 
         cout << "ERROR CODE 1.3 ";
@@ -608,6 +680,29 @@ int main()
             cout << *it << " ";
         }
         cout << endl;
+        exit(1);
     }
+    else if (type_mismatch_errors.size() > 0)
+    {
+        cout << type_mismatch_errors[0] << endl;
+        exit(1);
+    }
+    else if (uninitialized_variables.size() > 0)
+    {
+        // Take account of uninitialized variables
+        for (std::string &str : uninitialized_variables)
+        {
+            cout << str << endl;
+        }
+        exit(1);
+    }
+    else
+    {
+        for (string &ref : variable_references)
+        {
+            cout << ref << endl;
+        }
+    }
+
     return 0;
 }
