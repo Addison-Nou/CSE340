@@ -123,7 +123,7 @@ struct stmt *project3::parse_program()
 struct stmt *project3::parse_scope()
 {
 
-    Token t = expect(LBRACE);
+    expect(LBRACE);
 
     //Updating the new scope
     struct scope *newScope = new scope;
@@ -135,7 +135,6 @@ struct stmt *project3::parse_scope()
     expect(RBRACE);
 
     currentScope = currentScope->previousScope;
-
 }
 
 //scope_list -> ...
@@ -152,19 +151,23 @@ struct stmt *project3::parse_scope_list()
     }
     else if (t.token_type == ID)
     {
-        // ID LIST
+        // scope_list -> assign_stmt
         if (t2.token_type == EQUAL)
         {
             parse_stmt();
-        }
-        else
+        } // scope_list - > var_decl
+        else if (t2.token_type == COLON)
         {
             parse_var_decl();
         }
+        else
+        {
+            syntax_error();
+        }
     }
-    else if (t.token_type == WHILE)
+    else if (t.token_type == WHILE) //scope_list -> while_stmt
     {
-        parse_while_stmt();
+        parse_stmt();
     }
     else
     {
@@ -214,9 +217,10 @@ struct stmt *project3::parse_var_decl()
 //id_list -> ...
 std::vector<id_line_pair> project3::parse_id_list()
 {
+
     vector<id_line_pair> ids;
 
-    while (peek().token_type == ID)
+    do
     {
         Token t = expect(ID);
         id_line_pair new_pair;
@@ -227,7 +231,7 @@ std::vector<id_line_pair> project3::parse_id_list()
         Token t2 = lexer.GetToken();
         if (t2.token_type != COMMA)
             lexer.UngetToken(t2);
-    }
+    } while (peek().token_type == ID);
 
     return ids;
 }
@@ -687,12 +691,14 @@ struct stmt *project3::parse_condition()
 
     if (finalStmt->operator_symbol != GREATER && finalStmt->operator_symbol != GTEQ && finalStmt->operator_symbol != LESS && finalStmt->operator_symbol != LTEQ && finalStmt->operator_symbol != NOTEQUAL)
     {
-        if (memory[finalStmt->LHS].type == BOOLEAN){
+        if (memory[finalStmt->LHS].type == BOOLEAN)
+        {
             //cout << "No operator found, is it bool?" << endl;
             //cout << "LHS: " << memory[finalStmt->LHS].type << endl;
             expect(RPAREN);
             return st;
-        } else 
+        }
+        else
             // cout << "ERROR: Condition without relational operator: " << finalStmt->operator_symbol << endl;
             type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C7");
     }
