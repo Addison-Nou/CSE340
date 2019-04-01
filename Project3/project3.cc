@@ -360,11 +360,15 @@ struct stmt *project3::parse_while_stmt()
     }
 
     //while_stmt -> WHILE condition stmt
-    else if (t.token_type == ID || WHILE)
+    else if (t.token_type == ID || t.token_type == WHILE)
     {
         lexer.UngetToken(t);
         struct stmt *firstStmt = parse_stmt();
         whileStmt->body = firstStmt;
+    }
+    else
+    {
+        syntax_error();
     }
 
     // Undo all initializations
