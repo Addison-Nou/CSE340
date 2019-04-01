@@ -156,13 +156,9 @@ struct stmt *project3::parse_scope_list()
         {
             parse_stmt();
         } // scope_list - > var_decl
-        else if (t2.token_type == COLON)
-        {
-            parse_var_decl();
-        }
         else
         {
-            syntax_error();
+            parse_var_decl();
         }
     }
     else if (t.token_type == WHILE) //scope_list -> while_stmt
