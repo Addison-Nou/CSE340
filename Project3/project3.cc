@@ -6,6 +6,7 @@
 #include <deque>
 #include <vector>
 #include <set>
+#include <algorithm>
 
 #include "project3.h"
 
@@ -61,11 +62,11 @@ Token project3::expect(TokenType expected_type)
 int project3::getVariableLocation(std::string variableName, bool lookLocally = false)
 {
     string keywords[] = {
-        "REAL", "INT", "BOOLEAN", "STRING",
-        "WHILE", "TRUE", "FALSE"};
+        "real", "int", "boolean", "string"};
 
     for (auto &keyword : keywords)
     {
+        std::transform(variableName.begin(), variableName.end(), variableName.begin(), ::tolower);
         if (keyword.compare(variableName) == 0)
         {
             syntax_error();
@@ -410,8 +411,18 @@ struct stmt *project3::parse_expr()
         temp->operator_symbol = parse_arithmetic_operator();
         struct stmt *result1 = parse_expr();
         struct stmt *result2 = parse_expr();
-        temp->op1 = result1->LHS;
-        temp->op2 = result2->LHS;
+        struct stmt *finalResult1 = result1;
+        while (finalResult1->next != NULL)
+        {
+            finalResult1 = finalResult1->next;
+        }
+        struct stmt *finalResult2 = result2;
+        while (finalResult2->next != NULL)
+        {
+            finalResult2 = finalResult2->next;
+        }
+        temp->op1 = finalResult1->LHS;
+        temp->op2 = finalResult2->LHS;
 
         if ((memory[temp->op1].type != REAL && memory[temp->op1].type != INT) ||
             (memory[temp->op2].type != REAL && memory[temp->op2].type != INT))
@@ -434,8 +445,8 @@ struct stmt *project3::parse_expr()
         }
 
         // Set up ordering for execution of statements
-        result1->next = result2;
-        result2->next = temp;
+        finalResult1->next = result2;
+        finalResult2->next = temp;
 
         return result1;
     }
@@ -446,8 +457,18 @@ struct stmt *project3::parse_expr()
         temp->operator_symbol = parse_binary_boolean_operator();
         struct stmt *result1 = parse_expr();
         struct stmt *result2 = parse_expr();
-        temp->op1 = result1->LHS;
-        temp->op2 = result2->LHS;
+        struct stmt *finalResult1 = result1;
+        while (finalResult1->next != NULL)
+        {
+            finalResult1 = finalResult1->next;
+        }
+        struct stmt *finalResult2 = result2;
+        while (finalResult2->next != NULL)
+        {
+            finalResult2 = finalResult2->next;
+        }
+        temp->op1 = finalResult1->LHS;
+        temp->op2 = finalResult2->LHS;
 
         if ((memory[temp->op1].type != BOOLEAN) ||
             (memory[temp->op2].type != BOOLEAN))
@@ -456,8 +477,8 @@ struct stmt *project3::parse_expr()
         }
 
         // Set up ordering for execution of statements
-        result1->next = result2;
-        result2->next = temp;
+        finalResult1->next = result2;
+        finalResult2->next = temp;
         memory[temp->LHS].type = memory[temp->op1].type;
 
         return result1;
@@ -469,8 +490,18 @@ struct stmt *project3::parse_expr()
         temp->operator_symbol = parse_relational_operator();
         struct stmt *result1 = parse_expr();
         struct stmt *result2 = parse_expr();
-        temp->op1 = result1->LHS;
-        temp->op2 = result2->LHS;
+        struct stmt *finalResult1 = result1;
+        while (finalResult1->next != NULL)
+        {
+            finalResult1 = finalResult1->next;
+        }
+        struct stmt *finalResult2 = result2;
+        while (finalResult2->next != NULL)
+        {
+            finalResult2 = finalResult2->next;
+        }
+        temp->op1 = finalResult1->LHS;
+        temp->op2 = finalResult2->LHS;
 
         if ((memory[temp->op1].type == STRING && memory[temp->op2].type != STRING) ||
             (memory[temp->op1].type == BOOLEAN && memory[temp->op2].type != BOOLEAN))
@@ -488,8 +519,8 @@ struct stmt *project3::parse_expr()
             memory[temp->LHS].type = BOOLEAN;
         }
         // Set up ordering for execution of statements
-        result1->next = result2;
-        result2->next = temp;
+        finalResult1->next = result2;
+        finalResult2->next = temp;
 
         return result1;
     }
@@ -500,7 +531,13 @@ struct stmt *project3::parse_expr()
         temp->operator_symbol = NOT;
         lexer.GetToken();
         struct stmt *result1 = parse_expr();
-        temp->op1 = result1->LHS;
+        struct stmt *finalResult1 = result1;
+        while (finalResult1->next != NULL)
+        {
+            finalResult1 = finalResult1->next;
+        }
+        temp->op1 = finalResult1->LHS;
+
         memory[temp->LHS].type = memory[temp->op1].type;
 
         return result1;
