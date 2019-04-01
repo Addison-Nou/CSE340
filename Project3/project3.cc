@@ -113,6 +113,9 @@ struct stmt *project3::parse_program()
 {
     struct stmt *program = new struct stmt;
     parse_scope();
+
+    if (peek().token_type != END_OF_FILE)
+        syntax_error();
     return program;
 }
 
@@ -132,6 +135,7 @@ struct stmt *project3::parse_scope()
     expect(RBRACE);
 
     currentScope = currentScope->previousScope;
+
 }
 
 //scope_list -> ...
@@ -490,6 +494,7 @@ struct stmt *project3::parse_expr()
     else if (t.token_type == NOT)
     {
         temp->operator_symbol = NOT;
+        lexer.GetToken();
         struct stmt *result1 = parse_expr();
         temp->op1 = result1->LHS;
         memory[temp->LHS].type = memory[temp->op1].type;
@@ -585,6 +590,15 @@ int project3::parse_primary()
         }
         else
         {
+            //cout << "MEMORY AT LOCATION: " << memory[location].type << endl;
+            // if (memory[location].type == BOOLEAN){
+            //     cout << "MEMORY AT LOCATION: " << memory[location].type << endl;
+            //     struct variable var;
+            //     var.type = BOOLEAN;
+            //     var.value = 1;
+            //     memory.push_back(var);
+            //     return memory.size() - 1;
+            // }
             return location;
         }
     }
@@ -673,8 +687,14 @@ struct stmt *project3::parse_condition()
 
     if (finalStmt->operator_symbol != GREATER && finalStmt->operator_symbol != GTEQ && finalStmt->operator_symbol != LESS && finalStmt->operator_symbol != LTEQ && finalStmt->operator_symbol != NOTEQUAL)
     {
-        // cout << "ERROR: Condition without relational operator: " << finalStmt->operator_symbol << endl;
-        type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C7");
+        if (memory[finalStmt->LHS].type == BOOLEAN){
+            //cout << "No operator found, is it bool?" << endl;
+            //cout << "LHS: " << memory[finalStmt->LHS].type << endl;
+            expect(RPAREN);
+            return st;
+        } else 
+            // cout << "ERROR: Condition without relational operator: " << finalStmt->operator_symbol << endl;
+            type_mismatch_errors.push_back("TYPE MISMATCH " + to_string(lexer.get_line_no()) + " C7");
     }
 
     expect(RPAREN);

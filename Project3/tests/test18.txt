@@ -1,0 +1,5 @@
+{
+    x1 : BOOLEAN;
+    x1 = TRUE;
+    x1 = ~ TRUE;
+}

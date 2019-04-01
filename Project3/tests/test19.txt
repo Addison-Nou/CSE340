@@ -1,0 +1,8 @@
+{
+    x1 : BOOLEAN;
+    x1 = FALSE;
+    x2 : BOOLEAN;
+    x2 = TRUE;
+    WHILE (x1)
+        x1 = TRUE;
+}

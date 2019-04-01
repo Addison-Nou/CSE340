@@ -5,13 +5,13 @@ if [ ! -d "./tests" ]; then
     exit 1
 fi
 
-if [ ! -e "./a.exe" ]; then
-    echo "Error: a.exe not found!"
+if [ ! -e "./a.out" ]; then
+    echo "Error: a.out not found!"
     exit 1
 fi
 
-if [ ! -x "./a.exe" ]; then
-    echo "Error: a.exe not executable!"
+if [ ! -x "./a.out" ]; then
+    echo "Error: a.out not outcutable!"
     exit 1
 fi
 
@@ -26,7 +26,7 @@ for test_file in $(find ./tests -type f -name "*.txt" | sort); do
     expected_file=${test_file}.expected
     output_file=./output/${name}.output
     diff_file=./output/${name}.diff
-    ./a.exe < ${test_file} > ${output_file}
+    ./a.out < ${test_file} > ${output_file}
     diff -Bw ${expected_file} ${output_file} > ${diff_file}
     echo
     if [ -s ${diff_file} ]; then

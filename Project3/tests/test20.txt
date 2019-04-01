@@ -1,0 +1,54 @@
+{
+    x : INT;
+    y : REAL;
+    z : BOOLEAN;
+    w, v : STRING;
+    x = 5;
+    y = 5;
+    z = TRUE;
+    w = "Potato";
+    v = "potato";
+
+    WHILE(TRUE){
+        w = "asdf";
+    }
+
+    WHILE(FALSE)
+        w = "asdf";
+        z = FALSE;
+
+    WHILE(TRUE){
+        WHILE(z)
+            w = "asdf";
+        
+        z = TRUE;
+    }
+    
+    z = ~ TRUE;
+    z = ~ FALSE;
+    z = > 1 2;
+    z = < 1 2;
+    z = <> 1 2;
+    z = >= 1 2;
+    z = <= 1 2;
+    z = & TRUE FALSE;
+    z = | TRUE FALSE;
+
+    x = * 5 3;
+    x = - 5 3;
+    x = + 5 3;
+
+    y = / 5 3;
+    y = * 5 3;
+    y = - 5 3;
+    y = + 5 3;
+    p : INT;
+
+    {
+        p : INT;
+        p = 1;
+    }
+    p = 1;
+    y = 0;
+}
+}

@@ -14,24 +14,27 @@
 
 using namespace std;
 
-string reserved[] = {"END_OF_FILE",
-                     "REAL", "INT", "BOOLEAN", "STRING",
-                     "WHILE", "TRUE", "FALSE", "COMMA", "COLON", "SEMICOLON",
-                     "LBRACE", "RBRACE", "LPAREN", "RPAREN",
-                     "EQUAL", "PLUS", "MINUS", "MULT", "DIV", "AND", "OR", "XOR", "NOT",
-                     "GREATER", "GTEQ", "LESS", "LTEQ", "NOTEQUAL",
-                     "ID", "NUM", "REALNUM", "STRING_CONSTANT", "ERROR"};
+string reserved[] = { "END_OF_FILE",
+    "REAL", "INT", "BOOLEAN", "STRING",
+    "WHILE", "TRUE", "FALSE", "COMMA", "COLON", "SEMICOLON",
+    "LBRACE", "RBRACE", "LPAREN", "RPAREN",
+    "EQUAL", "PLUS", "MINUS", "MULT", "DIV","AND", "OR", "XOR", "NOT",
+    "GREATER", "GTEQ", "LESS", "LTEQ", "NOTEQUAL",
+    "ID", "NUM", "REALNUM", "STRING_CONSTANT", "ERROR"
+};
 
 #define KEYWORDS_COUNT 7
 string keyword[] = {
     "REAL", "INT", "BOOLEAN", "STRING",
-    "WHILE", "TRUE", "FALSE"};
+    "WHILE", "TRUE", "FALSE"
+};
 
 void Token::Print()
 {
     cout << "{" << this->lexeme << " , "
-         << reserved[(int)this->token_type] << " , "
+         << reserved[(int) this->token_type] << " , "
          << this->line_no << "}\n";
+    
 }
 
 LexicalAnalyzer::LexicalAnalyzer()
@@ -42,8 +45,7 @@ LexicalAnalyzer::LexicalAnalyzer()
     tmp.token_type = ERROR;
 }
 
-int LexicalAnalyzer::get_line_no()
-{
+int LexicalAnalyzer::get_line_no() {
     return line_no;
 }
 
@@ -52,18 +54,19 @@ bool LexicalAnalyzer::SkipSpace()
     char c;
     bool space_encountered = false;
 
+    if (input.EndOfInput())
+	return false;
+
     input.GetChar(c);
     line_no += (c == '\n');
 
-    while (!input.EndOfInput() && isspace(c))
-    {
+    while (!input.EndOfInput() && isspace(c)) {
         space_encountered = true;
-        input.GetChar(c);
-        line_no += (c == '\n');
+        if (input.GetChar(c))
+        	line_no += (c == '\n');
     }
 
-    if (!input.EndOfInput())
-    {
+    if (!input.EndOfInput()) {
         input.UngetChar(c);
     }
     return space_encountered;
@@ -71,10 +74,8 @@ bool LexicalAnalyzer::SkipSpace()
 
 bool LexicalAnalyzer::IsKeyword(string s)
 {
-    for (int i = 0; i < KEYWORDS_COUNT; i++)
-    {
-        if (s == keyword[i])
-        {
+    for (int i = 0; i < KEYWORDS_COUNT; i++) {
+        if (s == keyword[i]) {
             return true;
         }
     }
@@ -83,80 +84,71 @@ bool LexicalAnalyzer::IsKeyword(string s)
 
 TokenType LexicalAnalyzer::FindKeywordIndex(string s)
 {
-    for (int i = 0; i < KEYWORDS_COUNT; i++)
-    {
-        if (s == keyword[i])
-        {
-            return (TokenType)(i + 1);
+    for (int i = 0; i < KEYWORDS_COUNT; i++) {
+        if (s == keyword[i]) {
+            return (TokenType) (i + 1);
         }
     }
     return ERROR;
 }
 
+
 Token LexicalAnalyzer::ScanNumber()
 {
     char c;
+    tmp.lexeme = "";
+    tmp.token_type = ERROR;
+    tmp.line_no = line_no;
+
+    if (input.EndOfInput())
+	return tmp;
 
     input.GetChar(c);
-    if (isdigit(c))
-    {
-        if (c == '0')
-        {
+    if (isdigit(c)) {
+	tmp.token_type = NUM;
+        if (c == '0') {
             tmp.lexeme = "0";
-        }
-        else
-        {
+        } else {
             tmp.lexeme = "";
-            while (!input.EndOfInput() && isdigit(c))
-            {
+            while (!input.EndOfInput() && isdigit(c)) {
                 tmp.lexeme += c;
                 input.GetChar(c);
             }
-            if (!input.EndOfInput())
-            {
+            if (!input.EndOfInput()) {
                 input.UngetChar(c);
             }
         }
+    	if (input.EndOfInput())
+		return tmp;
         input.GetChar(c);
-        if (c == '.')
-        { // possibly REALNUM
+
+        if (c == '.') {           // possibly REALNUM
             input.GetChar(c);
-            if (isdigit(c))
-            { // definitely REALNUM
+            if (isdigit(c)) {     // definitely REALNUM
                 tmp.lexeme += '.';
-                while (isdigit(c))
-                {
+                while (isdigit(c)) {
                     tmp.lexeme += c;
                     input.GetChar(c);
                 }
-                if (!input.EndOfInput())
-                {
+                if (!input.EndOfInput()) {
                     input.UngetChar(c);
                 }
                 tmp.token_type = REALNUM;
-            }
-            else
-            {
-                if (!input.EndOfInput())
-                {
+            } else {
+                if (!input.EndOfInput()) {
                     input.UngetChar(c);
                 }
                 input.UngetChar('.');
                 tmp.token_type = NUM;
             }
-        }
-        else
-        {
+        } else {
             if (!input.EndOfInput())
                 input.UngetChar(c);
             tmp.token_type = NUM;
         }
         return tmp;
-    }
-    else
-    {
-        if (!input.EndOfInput())
-        {
+    } else {
+        if (!input.EndOfInput()) {
             input.UngetChar(c);
         }
         tmp.token_type = ERROR;
@@ -167,38 +159,31 @@ Token LexicalAnalyzer::ScanNumber()
 Token LexicalAnalyzer::ScanIdOrKeyword()
 {
     char c;
+    tmp.lexeme = "";
+    tmp.token_type = ERROR;
+    tmp.line_no = line_no;
+
+    if (input.EndOfInput())
+	return tmp;
+
 
     input.GetChar(c);
-    if (isalpha(c))
-    {
+    if (isalpha(c)) {
         tmp.lexeme = "";
-        //  cout<<"hello1";
-        while (!input.EndOfInput() && isalnum(c))
-        {
-            //cout<<" . "<<c<< " ";
+        while (!input.EndOfInput() && isalnum(c)) {
             tmp.lexeme += c;
-            //      cout<<" .1 "<<c<< " ";
             input.GetChar(c);
-            //  cout<<" .2 "<<c<< " ";
-            //  cout<<c<< " ";
         }
-        //    cout<<"hello2";
-        if (!input.EndOfInput())
-        {
+        if (!input.EndOfInput()) {
             input.UngetChar(c);
         }
-        //  cout<<"hello";
         tmp.token_type = ID;
         tmp.line_no = line_no;
         if (IsKeyword(tmp.lexeme))
             tmp.token_type = FindKeywordIndex(tmp.lexeme);
-    }
-    else
-    {
-        if (!input.EndOfInput())
-        {
-            input.UngetChar(c);
-        }
+
+    } else {
+        input.UngetChar(c);
         tmp.lexeme = "";
         tmp.token_type = ERROR;
     }
@@ -208,46 +193,43 @@ Token LexicalAnalyzer::ScanIdOrKeyword()
 Token LexicalAnalyzer::ScanStringCons()
 {
     char c;
+    tmp.lexeme = "";
+    tmp.token_type = ERROR;
+    tmp.line_no = line_no;
+
+    if (input.EndOfInput())
+	return tmp;
+
     input.GetChar(c);
     string lexeme = "";
 
-    if (c == '"')
-    {
+    if (c == '"') {
         tmp.lexeme = "";
-        //tmp.lexeme += '"';
         input.GetChar(c);
-        while (!input.EndOfInput() && isalnum(c))
-        {
+        while (!input.EndOfInput() && isalnum(c)) {
             lexeme += c;
             input.GetChar(c);
         }
-        if (!input.EndOfInput())
-        {
-            //input.GetChar(c);
-            if (c == '"')
-            {
-                //lexeme += c;
+        if (!input.EndOfInput()) {
+            if (c == '"') {
                 tmp.lexeme += lexeme;
                 tmp.token_type = STRING_CONSTANT;
             }
-            else
-            {
+            else{
                 tmp.lexeme = "";
                 tmp.token_type = ERROR;
             }
+
         }
-        else
-        {
+        else{
             tmp.lexeme = "";
             tmp.token_type = ERROR;
         }
 
         tmp.line_no = line_no;
-    }
-    else
-    {
-        if (!input.EndOfInput())
-        {
+
+    } else {
+        if (!input.EndOfInput()) {
             input.UngetChar(c);
         }
         tmp.lexeme = "";
@@ -273,8 +255,7 @@ Token LexicalAnalyzer::ScanStringCons()
 //
 TokenType LexicalAnalyzer::UngetToken(Token tok)
 {
-    tokens.push_back(tok);
-    ;
+    tokens.push_back(tok);;
     return tok.token_type;
 }
 
@@ -285,8 +266,7 @@ Token LexicalAnalyzer::GetToken()
     // if there are tokens that were previously
     // stored due to UngetToken(), pop a token and
     // return it without reading from input
-    if (!tokens.empty())
-    {
+    if (!tokens.empty()) {
         tmp = tokens.back();
         tokens.pop_back();
         return tmp;
@@ -294,132 +274,75 @@ Token LexicalAnalyzer::GetToken()
 
     SkipSpace();
     tmp.lexeme = "";
+    tmp.token_type = END_OF_FILE;
     tmp.line_no = line_no;
-    input.GetChar(c);
-    switch (c)
-    {
-    case ',':
-        tmp.token_type = COMMA;
-        return tmp;
-    case ':':
-        tmp.token_type = COLON;
-        return tmp;
-    case ';':
-        tmp.token_type = SEMICOLON;
-        return tmp;
-    case '{':
-        tmp.token_type = LBRACE;
-        return tmp;
-    case '}':
-        tmp.token_type = RBRACE;
-        return tmp;
-    case '(':
-        tmp.token_type = LPAREN;
-        return tmp;
-    case ')':
-        tmp.token_type = RPAREN;
-        return tmp;
-    case '=':
-        tmp.token_type = EQUAL;
-        return tmp;
-    case '+':
-        tmp.token_type = PLUS;
-        return tmp;
-    case '-':
-        tmp.token_type = MINUS;
-        return tmp;
-    case '*':
-        tmp.token_type = MULT;
-        return tmp;
-    case '/':
-        tmp.token_type = DIV;
-        return tmp;
-    case '|':
-        tmp.token_type = OR;
-        return tmp;
-    case '^':
-        tmp.token_type = AND;
-        return tmp;
-    case '&':
-        tmp.token_type = XOR;
-        return tmp;
-    case '~':
-        tmp.token_type = NOT;
-        return tmp;
-    case '>':
-        input.GetChar(c);
-        if (c == '=')
-        {
-            tmp.token_type = GTEQ;
-        }
-        else
-        {
-            if (!input.EndOfInput())
-            {
-                input.UngetChar(c);
-            }
-            tmp.token_type = GREATER;
-        }
-        return tmp;
-    case '<':
-        input.GetChar(c);
-        if (c == '=')
-        {
-            tmp.token_type = LTEQ;
-        }
-        else if (c == '>')
-        {
-            tmp.token_type = NOTEQUAL;
-        }
-        else
-        {
-            if (!input.EndOfInput())
-            {
-                input.UngetChar(c);
-            }
-            tmp.token_type = LESS;
-        }
+
+    if (!input.EndOfInput())
+    	input.GetChar(c);
+    else
         return tmp;
 
-    //STRING_CONSTANT
-    case '"':
-        input.UngetChar(c);
-        return ScanStringCons();
+    switch (c) {
+        case ',': tmp.token_type = COMMA;       return tmp;
+        case ':': tmp.token_type = COLON;       return tmp;
+        case ';': tmp.token_type = SEMICOLON;   return tmp;
+        case '{': tmp.token_type = LBRACE;      return tmp;
+        case '}': tmp.token_type = RBRACE;      return tmp;
+        case '(': tmp.token_type = LPAREN;      return tmp;
+        case ')': tmp.token_type = RPAREN;      return tmp;
+        case '=': tmp.token_type = EQUAL;       return tmp;
+        case '+': tmp.token_type = PLUS;        return tmp;
+        case '-': tmp.token_type = MINUS;       return tmp;
+        case '*': tmp.token_type = MULT;        return tmp;
+        case '/': tmp.token_type = DIV;        return tmp;
+        case '|': tmp.token_type = OR;          return tmp;
+        case '^': tmp.token_type = AND;         return tmp;
+        case '&': tmp.token_type = XOR;         return tmp;
+        case '~': tmp.token_type = NOT;         return tmp;
+        case '>':
+            input.GetChar(c);
+            if (c == '=') {
+                tmp.token_type = GTEQ;
+            } else {
+                if (!input.EndOfInput()) {
+                    input.UngetChar(c);
+                }
+                tmp.token_type = GREATER;
+            }
+            return tmp;
+        case '<':
+            input.GetChar(c);
+            if (c == '=') {
+                tmp.token_type = LTEQ;
+            } else if (c == '>') {
+                tmp.token_type = NOTEQUAL;
+            } else {
+                if (!input.EndOfInput()) {
+                    input.UngetChar(c);
+                }
+                tmp.token_type = LESS;
+            }
+            return tmp;
 
-    default:
-        if (isdigit(c))
-        {
+        //STRING_CONSTANT
+        case '"':
             input.UngetChar(c);
-            return ScanNumber();
-        }
-        else if (isalpha(c))
-        {
-            input.UngetChar(c);
-            return ScanIdOrKeyword();
-        }
-        else if (input.EndOfInput())
-        {
-            tmp.token_type = END_OF_FILE;
-        }
-        else
-        {
-            tmp.lexeme += c;
-            tmp.token_type = ERROR;
-        }
-        return tmp;
+            return ScanStringCons();
+
+        default:
+            if (isdigit(c)) {
+                input.UngetChar(c);
+                return ScanNumber();
+            } else if (isalpha(c)) {
+                input.UngetChar(c);
+                return ScanIdOrKeyword();
+            } else if (input.EndOfInput()) {
+                tmp.token_type = END_OF_FILE;
+            } else {
+                tmp.lexeme += c;
+                tmp.token_type = ERROR;
+            }
+            return tmp;
     }
 }
 
-// int main()
-// {
-//     LexicalAnalyzer lexer;
-//     Token token;
-
-//     token = lexer.GetToken();
-//     token.Print();
-//     while (token.token_type != END_OF_FILE)
-//     {
-//         token = lexer.GetToken();
-//         token.Print();
-//     }
-// }

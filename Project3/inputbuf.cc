@@ -14,11 +14,13 @@
 using namespace std;
 
 bool InputBuffer::EndOfInput()
-{
-    if (!input_buffer.empty())
-        return false;
+{ 
+    if (!input_buffer.empty()) 
+	return false;
     else
+    {   
         return cin.eof();
+    }
 }
 
 char InputBuffer::UngetChar(char c)
@@ -28,13 +30,18 @@ char InputBuffer::UngetChar(char c)
     return c;
 }
 
-void InputBuffer::GetChar(char& c)
+bool InputBuffer::GetChar(char& c)
 {
     if (!input_buffer.empty()) {
         c = input_buffer.back();
         input_buffer.pop_back();
+        return true;
     } else {
         cin.get(c);
+	if (!cin.eof())
+		return true;
+	else
+		return false;
     }
 }
 
