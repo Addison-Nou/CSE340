@@ -132,15 +132,15 @@ struct StatementNode *parser::parse_stmt(){
     }
     else if (t.token_type == IF){
         stmt->type = IF_STMT;
-        stmt = parse_if_stmt(stmt);
+        stmt->if_stmt = parse_if_stmt(stmt);
     }
     else if (t.token_type == SWITCH){
-        stmt->type = IF_STMT;
         stmt = parse_switch_stmt(stmt);
+        stmt->type = IF_STMT;
     }
     else if (t.token_type == FOR){
         stmt->type = IF_STMT;
-        stmt = parse_for_stmt(stmt);
+        stmt->if_stmt = parse_for_stmt(stmt);
     }
 }
 
@@ -265,6 +265,9 @@ struct IfStatement *parser::parse_while_stmt(struct StatementNode *stmt){
 
     whileStmt->false_branch = noop;
 
+    // It said to do this in the document, so I guess...?
+    stmt->next = noop;
+
     return whileStmt;
 }
 
@@ -307,21 +310,123 @@ struct IfStatement *parser::parse_if_stmt(struct StatementNode *stmt){
 
     ifStmt->false_branch = noop;
 
+    // It said to do this in the document?
+    stmt->next = noop;
+
     return ifStmt;
 }
 
-struct IfStatement *parser::parse_switch_stmt(struct StatementNode *stmt){
+struct StatementNode *parser::parse_switch_stmt(struct StatementNode *stmt){
     expect(SWITCH);
 
     struct IfStatement *switchStmt = new IfStatement;
 
     switchStmt->condition_operand1 = find_valuenode(parse_primary().lexeme);
 
+    switchStmt->condition_op = CONDITION_NOTEQUAL;
+
+    expect(LBRACE);
+
+    stmt = parse_case_list(switchStmt);
+
+    Token t = peek();
+    if (t.token_type == DEFAULT){
+        stmt->next = parse_default_case();
+    }
+
+    expect(RBRACE);
+
     return stmt;
 }
 
+struct StatementNode *parser::parse_case_list(struct IfStatement *switchStmt){
+
+    struct StatementNode *stmt = new StatementNode;
+
+    stmt = parse_case(switchStmt);
+
+    Token t = peek();
+    if (t.token_type == CASE)
+        stmt->next = parse_case_list(switchStmt);
+
+    else return stmt;
+}
+
+struct StatementNode *parser::parse_case(struct IfStatement *switchStmt){
+
+    expect(CASE);
+
+    Token t = expect(NUM);
+
+    expect(COLON);
+
+    struct StatementNode *nextStmt = new StatementNode;
+    
+    struct IfStatement *caseStmt = new IfStatement;
+
+    // Copy the operand1 and conditional_op to the new IfStatement that we're using
+    caseStmt = switchStmt;
+
+    // Set second operand to be the NUM, then parse the body
+    caseStmt->condition_operand2 = find_valuenode(t.lexeme);
+    caseStmt->false_branch = parse_body();
+
+    // Loop through the false_branch until NULL is found (indicating that it is the end of the body), then set the true_branch to that
+    struct StatementNode *noop = caseStmt->false_branch;
+
+    // Create a new StatementNode to hold a GotoStatement
+    struct StatementNode *GotoNode = new StatementNode;
+    GotoNode->type = GOTO_STMT;
+    GotoNode->goto_stmt->target = nextStmt;
+    caseStmt->false_branch->next = GotoNode;
+
+    while (noop->next != NULL){
+        noop = noop->next;
+    }
+
+    caseStmt->true_branch = noop;
+
+    // stmt->next = noop;
+
+    nextStmt->if_stmt = caseStmt;
+
+    nextStmt->type = IF_STMT;
+    
+    return nextStmt;    
+}
+
+struct StatementNode *parser::parse_default_case(){
+    expect(DEFAULT);
+    expect(COLON);
+    struct StatementNode *defaultCase = new StatementNode;
+    defaultCase = parse_body();
+}
+
 struct IfStatement *parser::parse_for_stmt(struct StatementNode *stmt){
-    Token t = expect(FOR);
+
+    struct StatementNode *assign1 = new StatementNode;
+    struct StatementNode *condition = new StatementNode;
+    struct StatementNode *assign2 = new StatementNode;
+
+    assign1->type = ASSIGN_STMT;
+    condition->type = IF_STMT;
+    assign2->type = ASSIGN_STMT;
+
+    expect(FOR);
+    expect(LPAREN);
+
+    assign1->assign_stmt = parse_assign_stmt();
+
+    //TODO: Fix parse_condition, finish coding parse_for_stmt
+    condition->if_stmt = parse_condition(stmt);
+
+    expect(SEMICOLON);
+
+    parse_assign_stmt;
+
+    expect(RPAREN);
+
+    parse_body();
 
     return stmt;
 }

@@ -20,7 +20,10 @@ public:
   struct IfStatement *parse_condition(struct IfStatement *stmt);
   int parse_relop();
   struct IfStatement *parse_if_stmt(struct StatementNode *stmt);
-  struct IfStatement *parse_switch_stmt(struct StatementNode *stmt);
+  struct StatementNode *parse_switch_stmt(struct StatementNode *stmt);
+  struct StatementNode *parse_case_list(struct IfStatement *switchStmt);
+  struct StatementNode *parse_case(struct IfStatement *switchStmt);
+  struct StatementNode *parse_default_case();
   struct IfStatement *parse_for_stmt(struct StatementNode *stmt);
 
 private:
