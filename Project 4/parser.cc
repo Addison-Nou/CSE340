@@ -128,19 +128,19 @@ struct StatementNode *parser::parse_stmt(){
     }
     else if (t.token_type == WHILE){
         stmt->type = GOTO_STMT;
-        stmt->goto_stmt = parse_while_stmt();
+        stmt->if_stmt = parse_while_stmt(stmt);
     }
     else if (t.token_type == IF){
         stmt->type = IF_STMT;
-        stmt->if_stmt = parse_if_stmt();
+        stmt = parse_if_stmt(stmt);
     }
     else if (t.token_type == SWITCH){
-        stmt->type = GOTO_STMT;
-        stmt->goto_stmt = parse_switch_stmt();
+        stmt->type = IF_STMT;
+        stmt = parse_switch_stmt(stmt);
     }
     else if (t.token_type == FOR){
-        stmt->type = GOTO_STMT;
-        stmt->goto_stmt = parse_for_stmt();
+        stmt->type = IF_STMT;
+        stmt = parse_for_stmt(stmt);
     }
 }
 
@@ -230,18 +230,98 @@ struct PrintStatement *parser::parse_print_stmt(){
     expect(SEMICOLON);
 }
 
-struct AssignmentStatement *parser::parse_while_stmt(){
-    Token t = expect(WHILE);
+struct IfStatement *parser::parse_while_stmt(struct StatementNode *stmt){
+    // Consume WHILE
+    expect(WHILE);
+
+    // Create new IfStatement for while loop
+    struct IfStatement *whileStmt = new IfStatement;
+
+    // Parse the condition
+    parse_condition(whileStmt);
+    
+    // While Statement's true_branch = whatever the body afterward is
+    whileStmt->true_branch = parse_body();
+
+    /***************GOTO NODE***************/
+
+    // Create a new StatementNode to hold a GotoStatement
+    struct StatementNode *GotoNode = new StatementNode;
+
+    // Set the type to tell the compiler to run Goto
+    GotoNode->type = GOTO_STMT;
+    // Set the Goto node's target to the beginning of the loop
+    GotoNode->goto_stmt->target = stmt;
+    // Set the next statement in the true branch to be the Goto node so it loops back
+    whileStmt->true_branch->next = GotoNode;
+
+    /***************GOTO END***************/
+
+    struct StatementNode *noop = whileStmt->true_branch;
+
+    while (noop->next != NULL){
+        noop = noop->next;
+    }
+
+    whileStmt->false_branch = noop;
+
+    return whileStmt;
 }
 
-struct AssignmentStatement *parser::parse_if_stmt(){
-    Token t = expect(IF);
+int parser::parse_relop(){
+    Token t = lexer.GetToken();
+    return t.token_type;
 }
 
-struct AssignmentStatement *parser::parse_switch_stmt(){
-    Token t = expect(SWITCH);
+struct IfStatement *parser::parse_condition(struct IfStatement *whileStmt){
+
+    // Get first operand
+    whileStmt->condition_operand1 = find_valuenode(parse_primary().lexeme);
+
+    switch(parse_relop()){
+        case 25: whileStmt->condition_op = CONDITION_GREATER;// GREATER
+        case 26: whileStmt->condition_op = CONDITION_LESS;// LESS
+        case 24: whileStmt->condition_op = CONDITION_NOTEQUAL;// NOTEQUAL
+        default: syntax_error();
+    }
+
+    whileStmt->condition_operand2 = find_valuenode(parse_primary().lexeme);
+
+    return whileStmt;
 }
 
-struct AssignmentStatement *parser::parse_for_stmt(){
+struct IfStatement *parser::parse_if_stmt(struct StatementNode *stmt){
+    expect(IF);
+    struct IfStatement *ifStmt = new IfStatement;
+
+    parse_condition(ifStmt);
+
+    ifStmt->true_branch = parse_body();
+    //ifStmt->false_branch = stmt->next;
+
+    struct StatementNode *noop = ifStmt->true_branch;
+
+    while (noop->next != NULL){
+        noop = noop->next;
+    }
+
+    ifStmt->false_branch = noop;
+
+    return ifStmt;
+}
+
+struct IfStatement *parser::parse_switch_stmt(struct StatementNode *stmt){
+    expect(SWITCH);
+
+    struct IfStatement *switchStmt = new IfStatement;
+
+    switchStmt->condition_operand1 = find_valuenode(parse_primary().lexeme);
+
+    return stmt;
+}
+
+struct IfStatement *parser::parse_for_stmt(struct StatementNode *stmt){
     Token t = expect(FOR);
+
+    return stmt;
 }

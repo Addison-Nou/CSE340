@@ -16,10 +16,12 @@ public:
   struct AssignmentStatement *parse_expr(struct AssignmentStatement *stmt);
   int parse_op();
   struct PrintStatement *parse_print_stmt();
-  struct GotoStatement *parse_while_stmt();
-  struct IfStatement *parse_if_stmt();
-  struct GotoStatement *parse_switch_stmt();
-  struct GotoStatement *parse_for_stmt();
+  struct IfStatement *parse_while_stmt(struct StatementNode *stmt);
+  struct IfStatement *parse_condition(struct IfStatement *stmt);
+  int parse_relop();
+  struct IfStatement *parse_if_stmt(struct StatementNode *stmt);
+  struct IfStatement *parse_switch_stmt(struct StatementNode *stmt);
+  struct IfStatement *parse_for_stmt(struct StatementNode *stmt);
 
 private:
   LexicalAnalyzer lexer;
