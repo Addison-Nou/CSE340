@@ -17,14 +17,14 @@ public:
   int parse_op();
   struct PrintStatement *parse_print_stmt();
   struct IfStatement *parse_while_stmt(struct StatementNode *stmt);
-  struct IfStatement *parse_condition(struct IfStatement *stmt);
+  struct IfStatement *parse_condition();
   int parse_relop();
   struct IfStatement *parse_if_stmt(struct StatementNode *stmt);
   struct StatementNode *parse_switch_stmt(struct StatementNode *stmt);
   struct StatementNode *parse_case_list(struct IfStatement *switchStmt);
   struct StatementNode *parse_case(struct IfStatement *switchStmt);
   struct StatementNode *parse_default_case();
-  struct IfStatement *parse_for_stmt(struct StatementNode *stmt);
+  struct StatementNode *parse_for_stmt();
 
 private:
   LexicalAnalyzer lexer;

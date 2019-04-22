@@ -108,15 +108,12 @@ struct StatementNode *parser::parse_stmt_list(){
 
     if (t.token_type == ID && t.token_type == PRINT && t.token_type == WHILE && t.token_type == IF && 
         t.token_type == SWITCH && t.token_type == FOR) return parse_stmt_list();
-
-    else expect(RBRACE);
 }
 
 struct StatementNode *parser::parse_stmt(){
     Token t = peek();
 
     struct StatementNode *stmt = new StatementNode;
-    
 
     if (t.token_type == ID){
         stmt->type = ASSIGN_STMT;
@@ -139,8 +136,8 @@ struct StatementNode *parser::parse_stmt(){
         stmt->type = IF_STMT;
     }
     else if (t.token_type == FOR){
+        stmt = parse_for_stmt();
         stmt->type = IF_STMT;
-        stmt->if_stmt = parse_for_stmt(stmt);
     }
 }
 
@@ -238,7 +235,7 @@ struct IfStatement *parser::parse_while_stmt(struct StatementNode *stmt){
     struct IfStatement *whileStmt = new IfStatement;
 
     // Parse the condition
-    parse_condition(whileStmt);
+    whileStmt = parse_condition();
     
     // While Statement's true_branch = whatever the body afterward is
     whileStmt->true_branch = parse_body();
@@ -276,28 +273,30 @@ int parser::parse_relop(){
     return t.token_type;
 }
 
-struct IfStatement *parser::parse_condition(struct IfStatement *whileStmt){
+struct IfStatement *parser::parse_condition(){
+
+    struct IfStatement *stmt = new IfStatement;
 
     // Get first operand
-    whileStmt->condition_operand1 = find_valuenode(parse_primary().lexeme);
+    stmt->condition_operand1 = find_valuenode(parse_primary().lexeme);
 
     switch(parse_relop()){
-        case 25: whileStmt->condition_op = CONDITION_GREATER;// GREATER
-        case 26: whileStmt->condition_op = CONDITION_LESS;// LESS
-        case 24: whileStmt->condition_op = CONDITION_NOTEQUAL;// NOTEQUAL
+        case 25: stmt->condition_op = CONDITION_GREATER;// GREATER
+        case 26: stmt->condition_op = CONDITION_LESS;// LESS
+        case 24: stmt->condition_op = CONDITION_NOTEQUAL;// NOTEQUAL
         default: syntax_error();
     }
 
-    whileStmt->condition_operand2 = find_valuenode(parse_primary().lexeme);
+    stmt->condition_operand2 = find_valuenode(parse_primary().lexeme);
 
-    return whileStmt;
+    return stmt;
 }
 
 struct IfStatement *parser::parse_if_stmt(struct StatementNode *stmt){
     expect(IF);
     struct IfStatement *ifStmt = new IfStatement;
 
-    parse_condition(ifStmt);
+    ifStmt = parse_condition();
 
     ifStmt->true_branch = parse_body();
     //ifStmt->false_branch = stmt->next;
@@ -402,31 +401,59 @@ struct StatementNode *parser::parse_default_case(){
     defaultCase = parse_body();
 }
 
-struct IfStatement *parser::parse_for_stmt(struct StatementNode *stmt){
+struct StatementNode *parser::parse_for_stmt(){
+    expect(FOR);
+    expect(LPAREN);
 
     struct StatementNode *assign1 = new StatementNode;
+    assign1->assign_stmt = parse_assign_stmt();
+    assign1->type = ASSIGN_STMT;
+    
+    // This is going to be used to hold the whileStmt
     struct StatementNode *condition = new StatementNode;
+    struct IfStatement *whileStmt = new IfStatement;
+
+    // Chain the next instruction
+    assign1->next = condition;
+
+    // Parse the condition
+    whileStmt = parse_condition();
+
+    expect(SEMICOLON);
+
+    // This assign will happen after every iteration of the while statement
     struct StatementNode *assign2 = new StatementNode;
+    assign2->assign_stmt = parse_assign_stmt();
+    expect(RPAREN);
+
+    // Finished setting up the structure, now to parse the body
+    // The body is basically the same structure as the while loop, but with assign2 being the next of the whileStmt
+
+    // While Statement's true_branch = whatever the body afterward is
+    whileStmt->true_branch = parse_body();
+
+    // Create a new StatementNode to hold a GotoStatement
+    struct StatementNode *GotoNode = new StatementNode;
+
+    GotoNode->type = GOTO_STMT;
+    GotoNode->goto_stmt->target = condition;
+    // Do the assignment
+    whileStmt->true_branch->next = assign2;
+    // After doing the assignment, go to the beginning of the loop
+    assign2->next = GotoNode;
+
+    // Iterate through the true_branch to find the end of it, then set the false_branch
+    struct StatementNode *noop = whileStmt->true_branch;
+    while (noop->next != NULL){
+        noop = noop->next;
+    }
+    whileStmt->false_branch = noop;
+
+    condition->if_stmt = whileStmt;
 
     assign1->type = ASSIGN_STMT;
     condition->type = IF_STMT;
     assign2->type = ASSIGN_STMT;
 
-    expect(FOR);
-    expect(LPAREN);
-
-    assign1->assign_stmt = parse_assign_stmt();
-
-    //TODO: Fix parse_condition, finish coding parse_for_stmt
-    condition->if_stmt = parse_condition(stmt);
-
-    expect(SEMICOLON);
-
-    parse_assign_stmt;
-
-    expect(RPAREN);
-
-    parse_body();
-
-    return stmt;
+    return assign1;
 }
