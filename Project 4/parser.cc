@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "parser.h"
+#include "compiler.h"
 
 using namespace std;
 
@@ -65,11 +66,22 @@ Token parser::expect(TokenType expected_type)
     return t;
 }
 
-struct AssignmentStatement *parser::parse_program(){
+struct StatementNode *parse_generate_intermediate_representation(){
+    parser parser;
+    struct StatementNode* program = parser.parse_program();
+    return program;
+}
 
-    // var_section -> id_list -> ID COMMA id_list | ID
+struct StatementNode *parser::parse_program(){
+
+    struct StatementNode *program = new StatementNode;
+
+    // Initializes all variables
     parse_var_section();
-    parse_body();
+
+    program = parse_body();
+
+    return program;
 }
 
 void parser::parse_var_section(){
@@ -97,17 +109,22 @@ void parser::parse_id_list(){
 
 struct StatementNode *parser::parse_body(){
     expect(LBRACE);
-    parse_stmt_list();
+    struct StatementNode *stmt = parse_stmt_list();
     expect(RBRACE);
+
+    return stmt;
 }
 
 struct StatementNode *parser::parse_stmt_list(){
-    parse_stmt();
+
+    struct StatementNode *stmt = parse_stmt();
 
     Token t = peek();
 
-    if (t.token_type == ID && t.token_type == PRINT && t.token_type == WHILE && t.token_type == IF && 
-        t.token_type == SWITCH && t.token_type == FOR) return parse_stmt_list();
+    if (t.token_type == ID || t.token_type == PRINT || t.token_type == WHILE || t.token_type == IF || 
+        t.token_type == SWITCH || t.token_type == FOR) return parse_stmt_list();
+
+    return stmt;
 }
 
 struct StatementNode *parser::parse_stmt(){
@@ -139,6 +156,8 @@ struct StatementNode *parser::parse_stmt(){
         stmt = parse_for_stmt();
         stmt->type = IF_STMT;
     }
+
+    return stmt;
 }
 
 struct AssignmentStatement *parser::parse_assign_stmt(){
@@ -151,13 +170,13 @@ struct AssignmentStatement *parser::parse_assign_stmt(){
 
     expect(EQUAL);
 
-    // ID
-    t = lexer.GetToken;
+    // ID or NUM
+    t = lexer.GetToken();
 
     // SEMICOLON or op
     Token t2 = peek();
 
-    t = lexer.UngetToken;
+    lexer.UngetToken(t);
 
     // if t2 is SEMICOLON:
     // assign_stmt -> ID EQUAL primary SEMICOLON
@@ -206,7 +225,7 @@ struct AssignmentStatement *parser::parse_expr(struct AssignmentStatement *stmt)
         case 11: stmt->op = OPERATOR_MINUS;
         case 12: stmt->op = OPERATOR_DIV;
         case 13: stmt->op = OPERATOR_MULT;
-        default: OPERATOR_NONE;
+        default: stmt->op = OPERATOR_NONE;
     }
 
     //Set operand2 to the first primary.
@@ -225,6 +244,8 @@ struct PrintStatement *parser::parse_print_stmt(){
     Token t = expect(ID);
     print->id = find_valuenode(t.lexeme);
     expect(SEMICOLON);
+
+    return print;
 }
 
 struct IfStatement *parser::parse_while_stmt(struct StatementNode *stmt){
@@ -255,6 +276,7 @@ struct IfStatement *parser::parse_while_stmt(struct StatementNode *stmt){
     /***************GOTO END***************/
 
     struct StatementNode *noop = whileStmt->true_branch;
+    noop->type = NOOP_STMT;
 
     while (noop->next != NULL){
         noop = noop->next;
@@ -302,6 +324,7 @@ struct IfStatement *parser::parse_if_stmt(struct StatementNode *stmt){
     //ifStmt->false_branch = stmt->next;
 
     struct StatementNode *noop = ifStmt->true_branch;
+    noop->type = NOOP_STMT;
 
     while (noop->next != NULL){
         noop = noop->next;
@@ -372,6 +395,7 @@ struct StatementNode *parser::parse_case(struct IfStatement *switchStmt){
 
     // Loop through the false_branch until NULL is found (indicating that it is the end of the body), then set the true_branch to that
     struct StatementNode *noop = caseStmt->false_branch;
+    noop->type = NOOP_STMT;
 
     // Create a new StatementNode to hold a GotoStatement
     struct StatementNode *GotoNode = new StatementNode;
@@ -444,6 +468,8 @@ struct StatementNode *parser::parse_for_stmt(){
 
     // Iterate through the true_branch to find the end of it, then set the false_branch
     struct StatementNode *noop = whileStmt->true_branch;
+    noop->type = NOOP_STMT;
+    
     while (noop->next != NULL){
         noop = noop->next;
     }

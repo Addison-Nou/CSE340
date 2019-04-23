@@ -5,7 +5,7 @@
 class parser
 {
 public:
-  struct AssignmentStatement *parse_program();
+  struct StatementNode *parse_program();
   void parse_var_section();
   void parse_id_list();
   struct StatementNode *parse_body();
@@ -29,9 +29,9 @@ public:
 private:
   LexicalAnalyzer lexer;
 
-  int check_var_value(string name);
-  struct ValueNode *parser::find_valuenode(string name);
-  bool is_integer(string name);
+  int check_var_value(std::string name);
+  struct ValueNode *find_valuenode(std::string name);
+  bool is_integer(std::string name);
   void syntax_error();
   Token expect(TokenType expected_type);
   Token peek();
