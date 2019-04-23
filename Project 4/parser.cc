@@ -94,7 +94,7 @@ void parser::parse_id_list(){
 
     // If the variable does not exist, then create it
     if (check_var_value(t.lexeme) == -1){
-        ValueNode *newValue;
+        ValueNode *newValue = new ValueNode;
         newValue->name = t.lexeme;
         newValue->value = 0;
         memory.push_back(newValue);
@@ -103,7 +103,10 @@ void parser::parse_id_list(){
     // Peek for the next token, if the id list continues then repeat
     t = peek();
 
-    if (t.token_type == ID) parse_id_list();
+    if (t.token_type == COMMA) {
+        lexer.GetToken();
+        parse_id_list();
+    }
 
 }
 
@@ -122,7 +125,10 @@ struct StatementNode *parser::parse_stmt_list(){
     Token t = peek();
 
     if (t.token_type == ID || t.token_type == PRINT || t.token_type == WHILE || t.token_type == IF || 
-        t.token_type == SWITCH || t.token_type == FOR) return parse_stmt_list();
+        t.token_type == SWITCH || t.token_type == FOR) {
+            
+        stmt->next = parse_stmt_list();
+    }
 
     return stmt;
 }
@@ -141,7 +147,7 @@ struct StatementNode *parser::parse_stmt(){
         stmt->print_stmt = parse_print_stmt();
     }
     else if (t.token_type == WHILE){
-        stmt->type = GOTO_STMT;
+        stmt->type = IF_STMT;
         stmt->if_stmt = parse_while_stmt(stmt);
     }
     else if (t.token_type == IF){
@@ -182,6 +188,7 @@ struct AssignmentStatement *parser::parse_assign_stmt(){
     // assign_stmt -> ID EQUAL primary SEMICOLON
     if (t2.token_type == SEMICOLON){
         stmt->operand1 = find_valuenode(parse_primary().lexeme);    //parse_primary() consumes primary
+        stmt->op = OPERATOR_NONE;
         expect(SEMICOLON);
         return stmt;
     }
@@ -207,7 +214,7 @@ Token parser::parse_primary(){
     } else if (t.token_type == NUM){
         // If the token type is a number, then check to see if the number exists yet. If it does not, then create it.
         if (check_var_value(t.lexeme) == -1){
-            ValueNode *newValue;
+            ValueNode *newValue = new ValueNode;
             newValue->name = t.lexeme;
             newValue->value = 0;
             memory.push_back(newValue);
@@ -221,10 +228,10 @@ struct AssignmentStatement *parser::parse_expr(struct AssignmentStatement *stmt)
     stmt->operand1 = find_valuenode(parse_primary().lexeme);
 
     switch (parse_op()){
-        case 10: stmt->op = OPERATOR_PLUS;
-        case 11: stmt->op = OPERATOR_MINUS;
-        case 12: stmt->op = OPERATOR_DIV;
-        case 13: stmt->op = OPERATOR_MULT;
+        case 10: stmt->op = OPERATOR_PLUS; break;
+        case 11: stmt->op = OPERATOR_MINUS; break;
+        case 12: stmt->op = OPERATOR_DIV; break;
+        case 13: stmt->op = OPERATOR_MULT; break;
         default: stmt->op = OPERATOR_NONE;
     }
 
@@ -252,11 +259,9 @@ struct IfStatement *parser::parse_while_stmt(struct StatementNode *stmt){
     // Consume WHILE
     expect(WHILE);
 
-    // Create new IfStatement for while loop
-    struct IfStatement *whileStmt = new IfStatement;
 
-    // Parse the condition
-    whileStmt = parse_condition();
+    // Create new IfStatement for while loop
+    struct IfStatement *whileStmt = parse_condition();
     
     // While Statement's true_branch = whatever the body afterward is
     whileStmt->true_branch = parse_body();
@@ -265,28 +270,43 @@ struct IfStatement *parser::parse_while_stmt(struct StatementNode *stmt){
 
     // Create a new StatementNode to hold a GotoStatement
     struct StatementNode *GotoNode = new StatementNode;
-
+    
+    struct GotoStatement *GotoStmt = new GotoStatement;
+    
     // Set the type to tell the compiler to run Goto
     GotoNode->type = GOTO_STMT;
+    GotoNode->goto_stmt = GotoStmt;
+
     // Set the Goto node's target to the beginning of the loop
     GotoNode->goto_stmt->target = stmt;
+
+
     // Set the next statement in the true branch to be the Goto node so it loops back
-    whileStmt->true_branch->next = GotoNode;
+
+    // a = a + 1; <- truebranch
+    // b = b + 1;
+    // b = b + 1;
+    // b = b + 1; <- end
+    // goto
+
+    struct StatementNode *end = whileStmt->true_branch;
+    
+    while(end->next != NULL) {
+        end = end->next;
+    }
+    
+    end->next = GotoNode;
 
     /***************GOTO END***************/
 
-    struct StatementNode *noop = whileStmt->true_branch;
+    struct StatementNode *noop = new StatementNode;
     noop->type = NOOP_STMT;
 
-    while (noop->next != NULL){
-        noop = noop->next;
-    }
-
     whileStmt->false_branch = noop;
-
-    // It said to do this in the document, so I guess...?
     stmt->next = noop;
 
+    GotoNode->next = noop;
+    
     return whileStmt;
 }
 
@@ -303,9 +323,9 @@ struct IfStatement *parser::parse_condition(){
     stmt->condition_operand1 = find_valuenode(parse_primary().lexeme);
 
     switch(parse_relop()){
-        case 25: stmt->condition_op = CONDITION_GREATER;// GREATER
-        case 26: stmt->condition_op = CONDITION_LESS;// LESS
-        case 24: stmt->condition_op = CONDITION_NOTEQUAL;// NOTEQUAL
+        case 25: stmt->condition_op = CONDITION_GREATER; break; // GREATER
+        case 26: stmt->condition_op = CONDITION_LESS; break; // LESS
+        case 24: stmt->condition_op = CONDITION_NOTEQUAL; break; // NOTEQUAL
         default: syntax_error();
     }
 
@@ -323,12 +343,8 @@ struct IfStatement *parser::parse_if_stmt(struct StatementNode *stmt){
     ifStmt->true_branch = parse_body();
     //ifStmt->false_branch = stmt->next;
 
-    struct StatementNode *noop = ifStmt->true_branch;
+    struct StatementNode *noop = new StatementNode;
     noop->type = NOOP_STMT;
-
-    while (noop->next != NULL){
-        noop = noop->next;
-    }
 
     ifStmt->false_branch = noop;
 
@@ -399,9 +415,20 @@ struct StatementNode *parser::parse_case(struct IfStatement *switchStmt){
 
     // Create a new StatementNode to hold a GotoStatement
     struct StatementNode *GotoNode = new StatementNode;
+    struct GotoStatement *GotoStmt = new GotoStatement;
+
     GotoNode->type = GOTO_STMT;
+    GotoNode->goto_stmt = GotoStmt;
     GotoNode->goto_stmt->target = nextStmt;
     caseStmt->false_branch->next = GotoNode;
+    
+    // Constructing end
+    struct StatementNode *end = caseStmt->false_branch;
+    while(end->next != NULL) {
+        end = end->next;
+    }
+    end->next = GotoNode;
+
 
     while (noop->next != NULL){
         noop = noop->next;
@@ -414,6 +441,8 @@ struct StatementNode *parser::parse_case(struct IfStatement *switchStmt){
     nextStmt->if_stmt = caseStmt;
 
     nextStmt->type = IF_STMT;
+
+    GotoNode->next = noop;
     
     return nextStmt;    
 }
@@ -435,18 +464,18 @@ struct StatementNode *parser::parse_for_stmt(){
     
     // This is going to be used to hold the whileStmt
     struct StatementNode *condition = new StatementNode;
-    struct IfStatement *whileStmt = new IfStatement;
+    struct IfStatement *whileStmt = parse_condition();
+    condition->if_stmt = whileStmt;
+    condition->type = IF_STMT;
 
     // Chain the next instruction
     assign1->next = condition;
-
-    // Parse the condition
-    whileStmt = parse_condition();
 
     expect(SEMICOLON);
 
     // This assign will happen after every iteration of the while statement
     struct StatementNode *assign2 = new StatementNode;
+    assign2->type = ASSIGN_STMT;
     assign2->assign_stmt = parse_assign_stmt();
     expect(RPAREN);
 
@@ -458,28 +487,32 @@ struct StatementNode *parser::parse_for_stmt(){
 
     // Create a new StatementNode to hold a GotoStatement
     struct StatementNode *GotoNode = new StatementNode;
+    struct GotoStatement *GotoStmt = new GotoStatement;
 
     GotoNode->type = GOTO_STMT;
+    GotoNode->goto_stmt = GotoStmt;
     GotoNode->goto_stmt->target = condition;
+
+    struct StatementNode *end = whileStmt->true_branch;
+    
+    while(end->next != NULL) {
+        end = end->next;
+    }
     // Do the assignment
-    whileStmt->true_branch->next = assign2;
+    end->next = assign2;
     // After doing the assignment, go to the beginning of the loop
     assign2->next = GotoNode;
 
-    // Iterate through the true_branch to find the end of it, then set the false_branch
-    struct StatementNode *noop = whileStmt->true_branch;
+    struct StatementNode *noop = new StatementNode;
     noop->type = NOOP_STMT;
-    
-    while (noop->next != NULL){
-        noop = noop->next;
-    }
+
     whileStmt->false_branch = noop;
 
     condition->if_stmt = whileStmt;
 
-    assign1->type = ASSIGN_STMT;
-    condition->type = IF_STMT;
-    assign2->type = ASSIGN_STMT;
+    GotoNode->next = noop;
+
+    condition->next = noop;
 
     return assign1;
 }
