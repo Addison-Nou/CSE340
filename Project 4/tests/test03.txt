@@ -1,0 +1,15 @@
+a, b, c;
+{
+   a = 10;
+   b = 1;
+   c = 0;
+   IF c < 3
+   {
+       b = b * a;
+       a = a - 1;
+       c = c + 1;
+    }
+    print a;
+    print b;
+    print c;
+}

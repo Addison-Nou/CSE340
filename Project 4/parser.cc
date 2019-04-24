@@ -400,9 +400,7 @@ struct IfStatement *parser::parse_condition()
 struct IfStatement *parser::parse_if_stmt(struct StatementNode *stmt)
 {
     expect(IF);
-    struct IfStatement *ifStmt = new IfStatement;
-
-    ifStmt = parse_condition();
+    struct IfStatement *ifStmt = parse_condition();
 
     ifStmt->true_branch = parse_body();
     //ifStmt->false_branch = stmt->next;
@@ -411,9 +409,16 @@ struct IfStatement *parser::parse_if_stmt(struct StatementNode *stmt)
     noop->type = NOOP_STMT;
     noop->next = NULL;
 
-    ifStmt->false_branch = noop;
+    struct StatementNode *end = ifStmt->true_branch;
 
-    // It said to do this in the document?
+    while (end->next != NULL)
+    {
+        end = end->next;
+    }
+
+    end->next = noop;
+
+    ifStmt->false_branch = noop;
     stmt->next = noop;
 
     return ifStmt;
