@@ -7,9 +7,6 @@ c;
         CASE 1: { 
             c = c + 1; 
             c = c + 1;
-            SWITCH c {
-                CASE 3: { c = 999; }
-            }
         }
        DEFAULT: { c = 1 + c; }
     }

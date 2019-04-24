@@ -461,10 +461,20 @@ struct StatementNode *parser::parse_switch_stmt()
     {
         endStmt->next = parse_default_case();
         lastIf->if_stmt->true_branch->next = endStmt->next; //noop -> next == parse_default_case()
-    } else {
+
+        while (endStmt->next != NULL){
+            endStmt = endStmt->next;
+        }
         endStmt->next = noop;
-        lastIf->if_stmt->true_branch->next = endStmt->next;
+
+    } else {
+        lastIf->if_stmt->true_branch->next = noop;
+        endStmt->next = noop;
+
     }
+    
+    // Go to the end of the parse default case
+
 
     
     expect(RBRACE);
@@ -475,24 +485,22 @@ struct StatementNode *parser::parse_switch_stmt()
 struct StatementNode *parser::parse_case_list(struct IfStatement *switchStmt, struct StatementNode *endStmt)
 {
 
-    struct StatementNode *stmt = new StatementNode;
-
-    stmt->type = IF_STMT;
-    stmt->if_stmt = parse_case(switchStmt, endStmt);
+    struct StatementNode *stmt = parse_case(switchStmt, endStmt);
 
     Token t = peek();
     if (t.token_type == CASE){
-        stmt->next = parse_case_list(switchStmt, endStmt);
+        stmt->next->next = parse_case_list(switchStmt, endStmt);
 
         struct StatementNode *endStmt = stmt->if_stmt->true_branch;
-        endStmt->next = stmt->next;
+        endStmt->next = stmt->next->next;
     } 
 
     return stmt;
 }
 
-struct IfStatement *parser::parse_case(struct IfStatement *switchStmt, struct StatementNode *endStmt)
+struct StatementNode *parser::parse_case(struct IfStatement *switchStmt, struct StatementNode *endStmt)
 {
+
 
     expect(CASE);
 
@@ -500,7 +508,10 @@ struct IfStatement *parser::parse_case(struct IfStatement *switchStmt, struct St
 
     expect(COLON);
 
+    struct StatementNode *stmt = new StatementNode;
+    stmt->type = IF_STMT;
     struct IfStatement *caseStmt = new IfStatement;
+    stmt->if_stmt = caseStmt;
 
     // Copy the operand1 and conditional_op to the new IfStatement that we're using
     caseStmt->condition_operand1 = switchStmt->condition_operand1;
@@ -523,6 +534,7 @@ struct IfStatement *parser::parse_case(struct IfStatement *switchStmt, struct St
     GotoNode->goto_stmt = GotoStmt;
     GotoNode->goto_stmt->target = endStmt;
     GotoNode->next = noop;
+    stmt->next = noop;
 
     // Constructing end
     struct StatementNode *end = caseStmt->false_branch;
@@ -541,7 +553,7 @@ struct IfStatement *parser::parse_case(struct IfStatement *switchStmt, struct St
 
     // stmt->next = noop;
 
-    return caseStmt;
+    return stmt;
 }
 
 struct StatementNode *parser::parse_default_case()

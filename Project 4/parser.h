@@ -22,7 +22,7 @@ public:
   struct IfStatement *parse_if_stmt(struct StatementNode *stmt);
   struct StatementNode *parse_switch_stmt();
   struct StatementNode *parse_case_list(struct IfStatement *switchStmt, struct StatementNode *endStmt);
-  struct IfStatement *parse_case(struct IfStatement *switchStmt, struct StatementNode *endStmt);
+  struct StatementNode *parse_case(struct IfStatement *switchStmt, struct StatementNode *endStmt);
   struct StatementNode *parse_default_case();
   struct StatementNode *parse_for_stmt();
 
