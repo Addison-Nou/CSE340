@@ -1,0 +1,15 @@
+a, b, c;
+{
+    a = 10;
+    b = 1;
+    c = 3;
+    SWITCH c
+    {
+       CASE 0: { c = c + 1; a = a + 4; }
+       CASE 1: { c = 5; b = b + 4; }
+       DEFAULT: { c = 4; }
+    }
+    print a;
+    print b;
+    print c;
+}
